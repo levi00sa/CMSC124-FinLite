@@ -190,9 +190,9 @@ class Scanner(private val source: String) {                                     
             advance()
         val text = source.substring(start, current)
         when (text) {
-            "true" -> addToken(TokenType.TRUE, true)
-            "false" -> addToken(TokenType.FALSE, false)
-            "null" -> addToken(TokenType.NULL, null)
+            "omsim" -> addToken(TokenType.TRUE, true)
+            "charot" -> addToken(TokenType.FALSE, false)
+            "olats" -> addToken(TokenType.NULL, null)
             "nil" -> addToken(TokenType.NULL, null)
             else -> addToken(keywords[text] ?: TokenType.IDENTIFIER)
         }
