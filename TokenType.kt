@@ -27,17 +27,15 @@ Steps:
 enum class TokenType {
     IDENTIFIER, STRING, NUMBER,                                                                      // Literals
 
-    VAR, SET, CONST, FUN, CALL, RETURN, IF, ELSE, FOR, WHILE, FOREACH, BREAK, CONTINUE, TRUE, FALSE  // Keywords
-    
+    SET, FN, VAL, CLASS, IF, ELSE, FOR, WHILE, RETURN, AND, OR, NOT, TRUE, FALSE,  // Keywords
+
     EQUAL_EQUAL, LESS, GREATER, MINUS_MINUS, PLUS_PLUS, LESS_EQUAL, 
     GREATER_EQUAL, BANG_EQUAL, BANG, EQUAL,                                                         // Operators (single and multi-character)
 
     LEFT_PAREN, RIGHT_PAREN, PLUS, MINUS, LEFT_BRACE, RIGHT_BRACE, LEFT_BRACKET, RIGHT_BRACKET, 
     COMMA, SEMICOLON, DOT, SLASH, STAR, DOUBLE_QUOTE, COLON,                                        // Symbols
 
-    NULL, EOF, ERROR, PRINT  
-    
-    IMPORT, EXPORT, CLASS, EXTENDS, CONSTRUCTOR, THIS                                                                          // Special markers
+    NULL, EOF, ERROR,                                                                               // Special markers
     
     INDENT, DEDENT, NEWLINE                                                                         // Indentation tokens
 }

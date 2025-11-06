@@ -11,7 +11,7 @@ object AstPrinter {
             is Expr.Unary -> "(${expr.operator.lexeme} ${print(expr.right)})"
             is Expr.Binary -> "(${expr.operator.lexeme} ${print(expr.left)} ${print(expr.right)})"
             is Expr.Block -> {
-                val statements = expr.statements.joinToString(" ") { print(it) }
+                val statements = expr.statements.joinToString(" ") { e -> print(e) }
                 "(block $statements)"
             }
         }
@@ -21,6 +21,8 @@ object AstPrinter {
         return when (value) {
             null -> "nil"
             is Double -> value.toString()
+            is Boolean -> if (value) "true" else "false"
+            is String -> "\"$value\""
             else -> value.toString()
         }
     }

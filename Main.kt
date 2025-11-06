@@ -12,7 +12,6 @@ fun main() {                                                                    
         val parser = Parser(tokens)                                                           // to create parser for those tokens
         val expr = parser.parse()                                                             // to parse tokens into an expression (AST)
 
-
         if(expr != null) {                                                                    // if parsing was successful
             println(AstPrinter.print(expr))                                                   // print the AST in parenthesized format
         } else {
