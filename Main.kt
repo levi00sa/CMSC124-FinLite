@@ -10,10 +10,12 @@ fun main() {                                                                    
         val tokens = scanner.scanTokens()                                                     // to scan tokens
 
         val parser = Parser(tokens)                                                           // to create parser for those tokens
-        val expr = parser.parseExpressionForREPL()                                                            // to parse tokens into an expression (AST)
+        val statements = parser.parse()                                                       // to parse tokens into statements (AST)
 
-        if(expr != null) {                                                                    // if parsing was successful
-            println(AstPrinter.print(expr))                                                   // print the AST in parenthesized format
+        if(statements.isNotEmpty()) {                                                         // if parsing was successful
+            for (stmt in statements) {
+                println(AstPrinter.print(stmt))                                              // print the AST in parenthesized format
+            }
         } else {
             println("Parsing error occurred.")                                                // if there was a parsing error
         }

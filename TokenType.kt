@@ -21,7 +21,9 @@ enum class TokenType {
 
     EXTENDS, SET, CONST, CALL, FOREACH, BREAK, CONTINUE, NOT,          //other reserved keywords or mappings
     IN, NEWLINE, INDENT, DEDENT, ERROR,
-    CONSTRUCTOR, IMPORT, EXPORT
+    CONSTRUCTOR, IMPORT, EXPORT,
+  
+    EOF
 }
 
 /*
@@ -41,4 +43,3 @@ enum class TokenType {
  importance:
   parser & scanner rely on this enumeration to maintain consistency in recognizing & interpreting diff language constructs
  */
-

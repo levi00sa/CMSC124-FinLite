@@ -8,27 +8,24 @@ val keywords = mapOf(
     "pumapapel" to TokenType.CALL,
     "balik" to TokenType.RETURN,
     
+//    "may" to TokenType.SET,
+//    "solid" to TokenType.VAL,
+//    "eksena" to TokenType.FN,
 
-    // Conditionals
+  // Conditionals
     "kung" to TokenType.IF,
     "hala" to TokenType.ELSE,
-
-    // Loops
+  //Loops
     "awra" to TokenType.WHILE,
     "forda" to TokenType.FOR,
     "bet" to TokenType.FOREACH,
-
-    // Control
     "amaccana" to TokenType.BREAK,
     "game" to TokenType.CONTINUE,
-
-    // Booleans
+  
     "omsim" to TokenType.TRUE,
-    "charot" to TokenType.FALSE,
     "olats" to TokenType.NULL,
-
+    "charot" to TokenType.FALSE,
     "dehins" to TokenType.BANG,
-
     "amp" to TokenType.AND,
     "baka" to TokenType.OR,
 

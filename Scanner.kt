@@ -11,15 +11,12 @@ class Scanner(private val source: String) {                                     
     fun scanTokens(): List<Token> {                                                                 // scan the entire source into tokens
         while (!isAtEnd()) {                                                                       // loop until all characters are consumed
             start = current                                                                        // mark beginning of the next token
-            
                                                                                                     // Handle indentation at start of line
             if (atStartOfLine) {
                 handleIndentation()
             }
-            
             scanToken()                                                                            // recognize the next token
         }
-        
                                                                                                     // Add any remaining DEDENT tokens
         while (indentStack.isNotEmpty()) {
             indentStack.removeAt(indentStack.size - 1)
@@ -183,16 +180,15 @@ class Scanner(private val source: String) {                                     
             }
         }
     }
-    
     private fun identifier() {
         atStartOfLine = false
         while (peek().isLetterOrDigit() || peek() == '_') 
             advance()
         val text = source.substring(start, current)
         when (text) {
-            "omsim" -> addToken(TokenType.TRUE, true)
-            "charot" -> addToken(TokenType.FALSE, false)
-            "olats" -> addToken(TokenType.NULL, null)
+            "true" -> addToken(TokenType.TRUE, true)
+            "false" -> addToken(TokenType.FALSE, false)
+            "null" -> addToken(TokenType.NULL, null)
             "nil" -> addToken(TokenType.NULL, null)
             else -> {
                 val type = keywords[text] ?: TokenType.IDENTIFIER
@@ -200,7 +196,6 @@ class Scanner(private val source: String) {                                     
             }
         }
     }
-
     private fun number() {
         atStartOfLine = false
         while (peek().isDigit()) advance()
@@ -208,7 +203,6 @@ class Scanner(private val source: String) {                                     
             advance()                                                                               // Consume the '.'
             while (peek().isDigit()) advance()
         }
-
         addToken(TokenType.NUMBER, source.substring(start, current).toDouble())
     }
 
