@@ -24,6 +24,7 @@ val keywords = mapOf(
   
     "omsim" to TokenType.TRUE,
     "olats" to TokenType.NULL,
+    "nil" to TokenType.NIL,
     "charot" to TokenType.FALSE,
     "dehins" to TokenType.BANG,
     "amp" to TokenType.AND,
