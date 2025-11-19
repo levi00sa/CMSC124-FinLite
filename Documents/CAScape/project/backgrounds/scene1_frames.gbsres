@@ -1,0 +1,12 @@
+{
+  "_resourceType": "background",
+  "id": "bc8d4342-37bc-48a4-aefe-6c7f053afaac",
+  "name": "scene1_frames",
+  "symbol": "bg_scene1_frames",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "scene1_frames.png",
+  "tileColors": ""
+}

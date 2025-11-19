@@ -1,0 +1,12 @@
+{
+  "_resourceType": "background",
+  "id": "9edb9275-445e-4c2c-b7c7-debfc1659b7d",
+  "name": "closeddoor1",
+  "symbol": "bg_closeddoor1",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "closeddoor1.png",
+  "tileColors": ""
+}

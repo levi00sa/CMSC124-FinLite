@@ -1,0 +1,70 @@
+{
+  "_resourceType": "scene",
+  "id": "0179ff57-30c7-46c0-924d-02bd2ecfab82",
+  "_index": 22,
+  "name": "Game Over 4",
+  "backgroundId": "1f9a9430-5446-47ec-9f9f-f81eb71eff05",
+  "tilesetId": "",
+  "width": 20,
+  "height": 18,
+  "type": "PLATFORM",
+  "paletteIds": [],
+  "spritePaletteIds": [],
+  "collisions": "",
+  "autoFadeSpeed": 1,
+  "symbol": "scene_13",
+  "x": 1528,
+  "y": 1304,
+  "script": [
+    {
+      "command": "EVENT_ACTOR_DEACTIVATE",
+      "args": {
+        "actorId": "$self$"
+      },
+      "id": "bb6c3072-bf66-4a26-b801-f42014565d1f"
+    },
+    {
+      "command": "EVENT_SET_INPUT_SCRIPT",
+      "args": {
+        "input": [
+          "b",
+          "left",
+          "up",
+          "a",
+          "right",
+          "down",
+          "start",
+          "select"
+        ],
+        "override": false,
+        "__scriptTabs": "press",
+        "__collapse": false
+      },
+      "children": {
+        "true": [
+          {
+            "command": "EVENT_SWITCH_SCENE",
+            "args": {
+              "sceneId": "7db47354-1760-4646-963f-00826289093d",
+              "x": {
+                "type": "number",
+                "value": 6
+              },
+              "y": {
+                "type": "number",
+                "value": 13
+              },
+              "direction": "right",
+              "fadeSpeed": "2"
+            },
+            "id": "8de7a43f-3afb-4867-a6ac-f7a1afe8f6cf"
+          }
+        ]
+      },
+      "id": "22b068d0-c3d1-4b03-9be6-da7ae074e836"
+    }
+  ],
+  "playerHit1Script": [],
+  "playerHit2Script": [],
+  "playerHit3Script": []
+}

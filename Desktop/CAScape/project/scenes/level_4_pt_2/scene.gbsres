@@ -1,0 +1,32 @@
+{
+  "_resourceType": "scene",
+  "id": "744d42fb-5d41-4824-b79a-5bc7f46f3e5b",
+  "_index": 17,
+  "name": "Level 4 pt 2",
+  "backgroundId": "a84e233c-834e-44ac-882e-d5e1d9590fb9",
+  "tilesetId": "",
+  "width": 48,
+  "height": 18,
+  "type": "PLATFORM",
+  "paletteIds": [],
+  "spritePaletteIds": [],
+  "collisions": "004+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f2c+004+0f!012b+004+0f!002f+0f!002f+0f!002f+0f!0018+0fc+003+0f4+004+0f!0022+0f2+003+0f!007+0f!0014+0f3+00b+0f2+003+0f!007+0fc+002+0f17+003+0f4+00f+0f!002+0f2+0014+0f!003+0f!0012+0f!002+0f2+0014+0f!003+0f!0012+0f!002+0f2+0014+0f!003+0f!003+",
+  "autoFadeSpeed": 1,
+  "symbol": "scene_18",
+  "x": 656,
+  "y": 1304,
+  "script": [
+    {
+      "command": "EVENT_ACTOR_SET_ANIMATION_SPEED",
+      "args": {
+        "actorId": "$self$",
+        "speed": 15
+      },
+      "id": "0be76d0d-899e-4d63-a6bc-825f1799134d"
+    }
+  ],
+  "playerHit1Script": [],
+  "playerHit2Script": [],
+  "playerHit3Script": [],
+  "playerSpriteSheetId": "2ad575bb-c0c8-4e50-984a-3a9fa21b1963"
+}

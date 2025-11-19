@@ -1,0 +1,12 @@
+{
+  "_resourceType": "background",
+  "id": "65cbbcd1-959d-41e4-8012-a5315c94a8f6",
+  "name": "scene1_upfloor1",
+  "symbol": "bg_scene1_upfloor1",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "scene1_upfloor1.png",
+  "tileColors": ""
+}

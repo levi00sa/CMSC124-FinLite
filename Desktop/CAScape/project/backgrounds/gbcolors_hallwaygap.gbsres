@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "7cd7c418-eb3b-498f-84f7-0ed608fd91db",
+  "name": "GBColors_HallwayGap",
+  "symbol": "bg_gbcolors_hallwaygap",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "GBColors_HallwayGap.png",
+  "tileColors": "",
+  "autoColor": false
+}

@@ -1,0 +1,34 @@
+{
+  "_resourceType": "scene",
+  "id": "401d2a50-2f6e-4983-96e5-aef1a54c8717",
+  "_index": 15,
+  "name": "Level 3 pt 4 (reveal last gap)",
+  "backgroundId": "5777e13c-dfb9-4890-86bf-658709cd2231",
+  "tilesetId": "",
+  "width": 48,
+  "height": 18,
+  "type": "PLATFORM",
+  "paletteIds": [
+    "dmg"
+  ],
+  "spritePaletteIds": [],
+  "collisions": "004+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f29+007+0f!012b+004+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0fb+003+0fa+003+0f7+002+0f8+00e+0f!003+0f!008+0f!003+0f!005+0f!002+0f3+0013+0f!003+0f!008+0f!003+0f!005+0f!002+0f3+0020+0f!003+0f!005+0f!002+0f3+005+",
+  "autoFadeSpeed": 1,
+  "symbol": "scene_16",
+  "x": 1352.7766689230698,
+  "y": 866.2142436309523,
+  "script": [
+    {
+      "command": "EVENT_ACTOR_SET_ANIMATION_SPEED",
+      "args": {
+        "actorId": "$self$",
+        "speed": 15
+      },
+      "id": "42263b74-7de5-4ff4-9294-54e869697439"
+    }
+  ],
+  "playerHit1Script": [],
+  "playerHit2Script": [],
+  "playerHit3Script": [],
+  "playerSpriteSheetId": "2ad575bb-c0c8-4e50-984a-3a9fa21b1963"
+}

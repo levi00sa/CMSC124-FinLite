@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "6cd38cf4-7965-4f57-aa1f-b90f3915ac71",
+  "name": "Play Again",
+  "symbol": "bg_play_again",
+  "width": 20,
+  "height": 18,
+  "imageWidth": 160,
+  "imageHeight": 144,
+  "filename": "Play Again.png",
+  "tileColors": "",
+  "autoColor": false
+}

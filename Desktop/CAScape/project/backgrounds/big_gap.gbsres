@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "bf3cb831-0c50-42d0-98a2-fa4da8c03804",
+  "name": "big gap",
+  "symbol": "bg_big_gap",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "big gap.png",
+  "tileColors": "00240+",
+  "autoColor": false
+}

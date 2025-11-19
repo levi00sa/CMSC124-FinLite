@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "a76f7e00-ea57-41db-b552-a8bd91b9266b",
+  "name": "opendoor",
+  "symbol": "bg_opendoor",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "opendoor.png",
+  "tileColors": "",
+  "autoColor": false
+}

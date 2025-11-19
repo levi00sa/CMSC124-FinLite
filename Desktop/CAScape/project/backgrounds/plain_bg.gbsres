@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "e703b98d-3b5f-4c94-97b7-a5c1e855722d",
+  "name": "plain_bg",
+  "symbol": "bg_plain_bg",
+  "width": 48,
+  "height": 18,
+  "imageWidth": 384,
+  "imageHeight": 144,
+  "filename": "plain_bg.png",
+  "tileColors": "",
+  "autoColor": false
+}

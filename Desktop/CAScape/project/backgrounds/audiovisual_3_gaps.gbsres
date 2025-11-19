@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "5777e13c-dfb9-4890-86bf-658709cd2231",
+  "name": "AudioVisual_3 Gaps",
+  "symbol": "bg_audiovisual_3_gaps",
+  "width": 48,
+  "height": 18,
+  "imageWidth": 384,
+  "imageHeight": 144,
+  "filename": "AudioVisual_3 Gaps.png",
+  "tileColors": "",
+  "autoColor": false
+}

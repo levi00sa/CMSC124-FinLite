@@ -1,0 +1,12 @@
+{
+  "_resourceType": "background",
+  "id": "0d1908a9-2822-4ad0-bcf7-13ed3b441583",
+  "name": "scene1_disappearingfloor1",
+  "symbol": "bg_scene1_disappearingfloor",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "scene1_disappearingfloor1.png",
+  "tileColors": ""
+}

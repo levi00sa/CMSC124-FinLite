@@ -1,0 +1,43 @@
+{
+  "_resourceType": "scene",
+  "id": "e3ec94e4-3653-4014-bea0-4192b6e9dc5b",
+  "_index": 13,
+  "name": "Level 3: Don't get too close to the spikes",
+  "backgroundId": "dbc945d8-04d9-43a4-9288-7622e9374655",
+  "tilesetId": "",
+  "width": 48,
+  "height": 18,
+  "type": "PLATFORM",
+  "paletteIds": [
+    "dmg"
+  ],
+  "spritePaletteIds": [],
+  "collisions": "004+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f2c+004+0f!012b+004+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0fb+003+0fa+003+0f7+004+0f6+00e+0f!003+0f!008+0f!003+0f!005+0f!004+0f!0013+0f!003+0f!008+0f!003+0f!005+0f!004+0f!0020+0f!003+0f!005+0f!004+0f!005+",
+  "autoFadeSpeed": 1,
+  "symbol": "scene_12",
+  "x": 64,
+  "y": 872,
+  "script": [
+    {
+      "command": "EVENT_FADE_IN",
+      "args": {
+        "speed": 1,
+        "__collapse": false
+      },
+      "id": "13d3de69-6192-4bc7-bbe5-792afc89f66a"
+    },
+    {
+      "command": "EVENT_ACTOR_SET_ANIMATION_SPEED",
+      "args": {
+        "actorId": "player",
+        "speed": 15,
+        "__collapse": false
+      },
+      "id": "eef210a2-9dbb-467d-a4eb-96401d7f356e"
+    }
+  ],
+  "playerHit1Script": [],
+  "playerHit2Script": [],
+  "playerHit3Script": [],
+  "playerSpriteSheetId": "2ad575bb-c0c8-4e50-984a-3a9fa21b1963"
+}

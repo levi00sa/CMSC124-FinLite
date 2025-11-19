@@ -1,0 +1,42 @@
+{
+  "_resourceType": "trigger",
+  "id": "89e38438-8243-4e1f-8b86-81eb4073a06f",
+  "name": "",
+  "prefabId": "",
+  "x": 20,
+  "y": 14,
+  "symbol": "trigger_41",
+  "prefabScriptOverrides": {},
+  "width": 1,
+  "height": 1,
+  "script": [
+    {
+      "command": "EVENT_TEXT",
+      "args": {
+        "text": [
+          "Mind the stairs!"
+        ],
+        "__section": "text",
+        "avatarId": "",
+        "minHeight": 4,
+        "maxHeight": 7,
+        "textX": 1,
+        "textY": 1,
+        "textHeight": 5,
+        "position": "bottom",
+        "clearPrevious": true,
+        "showFrame": "true",
+        "speedIn": -1,
+        "speedOut": -1,
+        "closeWhen": "key",
+        "closeButton": "any",
+        "closeDelayTime": 0.5,
+        "closeDelayFrames": 30,
+        "__collapse": false
+      },
+      "id": "59b10964-c42c-49c3-b04f-ab2e932d0921"
+    }
+  ],
+  "leaveScript": [],
+  "_index": 4
+}

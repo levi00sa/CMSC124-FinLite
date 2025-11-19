@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "dbc945d8-04d9-43a4-9288-7622e9374655",
+  "name": "AudioVisual",
+  "symbol": "bg_audiovisual",
+  "width": 48,
+  "height": 18,
+  "imageWidth": 384,
+  "imageHeight": 144,
+  "filename": "AudioVisual.png",
+  "tileColors": "",
+  "autoColor": false
+}

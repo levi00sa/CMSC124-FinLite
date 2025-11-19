@@ -1,0 +1,48 @@
+{
+  "_resourceType": "scene",
+  "id": "cc1ad70b-57f3-4688-b091-a44b5d5e960b",
+  "_index": 19,
+  "name": "Level 5",
+  "backgroundId": "830f36a0-27e1-4605-bf76-4d1c3180e348",
+  "tilesetId": "",
+  "width": 48,
+  "height": 18,
+  "type": "PLATFORM",
+  "paletteIds": [
+    "default-bg-2"
+  ],
+  "spritePaletteIds": [],
+  "collisions": "004+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f!002f+0f2c+004+0f!012b+004+0f!002f+0f!002f+0f!002f+0f!0021+0fa+004+0f!001d+0f2+002+0f!00d+0f!001e+0f!002+0f!00d+0fc+009+0f3+007+0f!002+0f!0018+0f!003+0f4+00c+0f!002+0f!0018+0f!003+0f!00f+0f!002+0f!0018+0f!003+0f!001c+",
+  "autoFadeSpeed": 1,
+  "symbol": "scene_22",
+  "x": 184,
+  "y": 1416,
+  "script": [
+    {
+      "command": "EVENT_CAMERA_SHAKE",
+      "args": {
+        "time": 2,
+        "frames": 30,
+        "shakeDirection": "horizontal",
+        "magnitude": {
+          "type": "number",
+          "value": 1
+        }
+      },
+      "id": "777e44cb-4bd7-4329-86d2-00770a82718a"
+    },
+    {
+      "command": "EVENT_ACTOR_SET_ANIMATION_SPEED",
+      "args": {
+        "actorId": "$self$",
+        "speed": 15
+      },
+      "id": "0afbf5f3-9ab8-4058-a1a4-b06683b4ee3b"
+    }
+  ],
+  "playerHit1Script": [],
+  "playerHit2Script": [],
+  "playerHit3Script": [],
+  "autoFadeEventCollapse": false,
+  "playerSpriteSheetId": "2ad575bb-c0c8-4e50-984a-3a9fa21b1963"
+}

@@ -1,0 +1,50 @@
+{
+  "_resourceType": "scene",
+  "id": "65ff3f88-7dda-4ea8-a34f-a47fb345e77a",
+  "_index": 4,
+  "name": "reveal gap",
+  "backgroundId": "7cd7c418-eb3b-498f-84f7-0ed608fd91db",
+  "tilesetId": "",
+  "width": 32,
+  "height": 18,
+  "type": "PLATFORM",
+  "paletteIds": [
+    "default-bg-2"
+  ],
+  "spritePaletteIds": [],
+  "collisions": "002+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f1e+002+0f!011d+002+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f12+003+0f9+0013+0f!003+0f!007+0f!0013+0f!003+0f!007+0f!0013+0f!003+0f!007+0f!",
+  "autoFadeSpeed": 1,
+  "symbol": "scene_5",
+  "x": 360,
+  "y": 272,
+  "script": [
+    {
+      "command": "EVENT_ACTOR_SET_POSITION",
+      "args": {
+        "actorId": "$self$",
+        "x": {
+          "type": "number",
+          "value": 18
+        },
+        "y": {
+          "type": "number",
+          "value": 13
+        }
+      },
+      "id": "f8513d4e-43dd-45e1-9fcb-c56c8444ecc0"
+    },
+    {
+      "command": "EVENT_ACTOR_SET_ANIMATION_SPEED",
+      "args": {
+        "actorId": "$self$",
+        "speed": 15
+      },
+      "id": "0aa4d66b-8d2f-455a-8b88-47754ce23a5f"
+    }
+  ],
+  "playerHit1Script": [],
+  "playerHit2Script": [],
+  "playerHit3Script": [],
+  "autoFadeEventCollapse": false,
+  "playerSpriteSheetId": "2ad575bb-c0c8-4e50-984a-3a9fa21b1963"
+}

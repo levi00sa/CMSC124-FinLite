@@ -1,0 +1,99 @@
+{
+  "_resourceType": "scene",
+  "id": "3622fc30-8d5f-42bd-98a6-31169e0387f9",
+  "_index": 2,
+  "name": "Level 1 Start ",
+  "backgroundId": "9edb9275-445e-4c2c-b7c7-debfc1659b7d",
+  "tilesetId": "",
+  "width": 32,
+  "height": 18,
+  "type": "PLATFORM",
+  "paletteIds": [],
+  "spritePaletteIds": [],
+  "collisions": "002+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f!04!001e+0f!04!001e+0f!04!001e+0f!04!001e+0f!04!001e+0f!04!001e+0f!001f+0f12+002+0fa+0013+0f!002+0f2+007+0f!0013+0f!002+0f2+007+0f!0013+0f!002+0f2+007+0f!",
+  "autoFadeSpeed": 1,
+  "symbol": "scene_3",
+  "x": 80,
+  "y": 272,
+  "script": [
+    {
+      "command": "EVENT_SET_INPUT_SCRIPT",
+      "args": {
+        "input": [
+          "right",
+          "down",
+          "up",
+          "left"
+        ],
+        "override": false,
+        "__scriptTabs": "press",
+        "__collapse": false
+      },
+      "children": {
+        "true": [
+          {
+            "command": "EVENT_IF_INPUT",
+            "args": {
+              "input": [
+                "left",
+                "up",
+                "down",
+                "right"
+              ],
+              "__collapseElse": true
+            },
+            "children": {
+              "true": [],
+              "false": []
+            },
+            "id": "081d886a-377e-4221-bacc-c755ba51d0e9"
+          }
+        ]
+      },
+      "id": "d978e1a2-50e4-4999-8849-04d6337bc1e5"
+    },
+    {
+      "command": "EVENT_IF_ACTOR_AT_POSITION",
+      "args": {
+        "actorId": "$self$",
+        "x": {
+          "type": "number",
+          "value": 18
+        },
+        "y": {
+          "type": "number",
+          "value": 13
+        },
+        "__collapseElse": true
+      },
+      "children": {
+        "true": [
+          {
+            "command": "EVENT_SWITCH_SCENE",
+            "args": {
+              "sceneId": "65ff3f88-7dda-4ea8-a34f-a47fb345e77a",
+              "x": {
+                "type": "number",
+                "value": 18
+              },
+              "y": {
+                "type": "number",
+                "value": 12
+              },
+              "direction": "right",
+              "fadeSpeed": 0,
+              "__collapse": true
+            },
+            "id": "af7992f5-c20c-47bc-bd7c-6383a7f7e33e"
+          }
+        ],
+        "false": []
+      },
+      "id": "ad1238bc-60c6-441c-bc15-25320c27265f"
+    }
+  ],
+  "playerHit1Script": [],
+  "playerHit2Script": [],
+  "playerHit3Script": [],
+  "autoFadeEventCollapse": true
+}

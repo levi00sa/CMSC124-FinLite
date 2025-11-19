@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "8b96cea7-6d3d-46dc-8412-e3ec0eded2ff",
+  "name": "GBColors_Hallway",
+  "symbol": "bg_gbcolors_hallway",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "GBColors_Hallway.png",
+  "tileColors": "",
+  "autoColor": false
+}

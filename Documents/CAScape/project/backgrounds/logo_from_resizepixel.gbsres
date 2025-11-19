@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "58d8596d-6a6d-43d2-b413-cd0b37de0a45",
+  "name": "Logo from ResizePixel",
+  "symbol": "bg_logo_from_resizepixel",
+  "width": 20,
+  "height": 18,
+  "imageWidth": 160,
+  "imageHeight": 144,
+  "filename": "Logo from ResizePixel.png",
+  "tileColors": "",
+  "autoColor": false
+}

@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "874d12e8-0ee3-4c7d-83c0-f464ab48d853",
+  "name": "ComLab",
+  "symbol": "bg_pixil_frame_0_7_",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "ComLab.png",
+  "tileColors": "",
+  "autoColor": false
+}

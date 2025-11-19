@@ -1,0 +1,34 @@
+{
+  "_resourceType": "scene",
+  "id": "0149b855-3e26-44c5-982a-61b13c833651",
+  "_index": 9,
+  "name": "Level 2 scene 3: dangerous leap of faith",
+  "backgroundId": "15c33c8c-119e-4955-909c-cfffd26ecbfb",
+  "tilesetId": "",
+  "width": 32,
+  "height": 18,
+  "type": "PLATFORM",
+  "paletteIds": [
+    "default-bg-1"
+  ],
+  "spritePaletteIds": [],
+  "collisions": "002+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f!001f+0f1d+003+0f!011d+002+0f!04!001e+0f!04!001e+0f!04!001e+0f!04!001e+0f!04!001e+0f!001f+0f12+003+0f9+0013+0f!003+0f!007+0f!0013+0f!003+0f!007+0f!0013+0f!003+0f!007+0f!",
+  "autoFadeSpeed": 1,
+  "symbol": "scene_10",
+  "x": 648,
+  "y": 464,
+  "script": [
+    {
+      "command": "EVENT_ACTOR_SET_ANIMATION_SPEED",
+      "args": {
+        "actorId": "$self$",
+        "speed": 15
+      },
+      "id": "86d14261-110a-4375-9fd2-88de707cefa3"
+    }
+  ],
+  "playerHit1Script": [],
+  "playerHit2Script": [],
+  "playerHit3Script": [],
+  "playerSpriteSheetId": "2ad575bb-c0c8-4e50-984a-3a9fa21b1963"
+}

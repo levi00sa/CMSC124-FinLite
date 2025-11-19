@@ -1,0 +1,13 @@
+{
+  "_resourceType": "background",
+  "id": "15c33c8c-119e-4955-909c-cfffd26ecbfb",
+  "name": "ComLab_Gap",
+  "symbol": "bg_pixil_frame_0_8_",
+  "width": 32,
+  "height": 18,
+  "imageWidth": 256,
+  "imageHeight": 144,
+  "filename": "ComLab_Gap.png",
+  "tileColors": "",
+  "autoColor": false
+}
