@@ -21,9 +21,7 @@ enum class TokenType {
 
     EXTENDS, SET, CONST, CALL, FOREACH, BREAK, CONTINUE, NOT,          //other reserved keywords or mappings
     IN, NEWLINE, INDENT, DEDENT, ERROR,
-    CONSTRUCTOR, IMPORT, EXPORT,
-  
-    EOF
+    CONSTRUCTOR, IMPORT, EXPORT
 }
 
 /*

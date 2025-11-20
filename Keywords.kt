@@ -1,47 +1,43 @@
 
 val keywords = mapOf(
     // Variables & Functions
-    "may" to TokenType.VAR,
-    "pak" to TokenType.SET,
-    "solid" to TokenType.CONST,
-    "eksena" to TokenType.FUN,
-    "pumapapel" to TokenType.CALL,
-    "balik" to TokenType.RETURN,
-    
-//    "may" to TokenType.SET,
-//    "solid" to TokenType.VAL,
-//    "eksena" to TokenType.FN,
+    "may" to TokenType.MAY,
+    "pak" to TokenType.PAK,
+    "solid" to TokenType.SOLID,
+    "eksena" to TokenType.EKSENA,
+    "pumapapel" to TokenType.PUMAPAPEL,
+    "balik" to TokenType.BALIK,
 
   // Conditionals
-    "kung" to TokenType.IF,
-    "hala" to TokenType.ELSE,
+    "kung" to TokenType.KUNG,
+    "hala" to TokenType.HALA,
   //Loops
-    "awra" to TokenType.WHILE,
-    "forda" to TokenType.FOR,
-    "bet" to TokenType.FOREACH,
-    "amaccana" to TokenType.BREAK,
-    "game" to TokenType.CONTINUE,
+    "awra" to TokenType.AWRA,
+    "forda" to TokenType.FORDA,
+    "bet" to TokenType.BET,
+    "amaccana" to TokenType.AMACCANA,
+    "game" to TokenType.GAME,
   
-    "omsim" to TokenType.TRUE,
-    "olats" to TokenType.NULL,
-    "charot" to TokenType.FALSE,
-    "dehins" to TokenType.BANG,
-    "amp" to TokenType.AND,
-    "baka" to TokenType.OR,
+    "omsim" to TokenType.OMSIM,
+    "olats" to TokenType.OLATS,
+    "charot" to TokenType.CHAROT,
+    "dehins" to TokenType.DEHINS,
+    "amp" to TokenType.AMP,
+    "baka" to TokenType.BAKA,
 
     // Object-oriented
-    "peg" to TokenType.CLASS,
-    "naol" to TokenType.EXTENDS,
-    "simula" to TokenType.CONSTRUCTOR,
-    "keratin" to TokenType.THIS,
+    "peg" to TokenType.PEG,
+    "naol" to TokenType.NAOL,
+    "simula" to TokenType.SIMULA,
+    "keratin" to TokenType.KERATIN,
 
     // IO and error
-    "chika" to TokenType.PRINT,
-    "DANGEROUS" to TokenType.ERROR,
+    "chika" to TokenType.CHIKA,
+    "DANGEROUS" to TokenType.DANGEROUS,
 
     // Imports and Exports
-    "ermats" to TokenType.IMPORT,
-    "erpats" to TokenType.EXPORT
+    "ermats" to TokenType.ERMATS,
+    "erpats" to TokenType.ERPATS
 )
 
 /*

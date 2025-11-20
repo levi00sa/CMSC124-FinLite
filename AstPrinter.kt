@@ -4,7 +4,7 @@ object AstPrinter {
             is Stmt.Expression -> printExpr(stmt.expression)
             is Stmt.Function -> {
                 val params = stmt.params.joinToString(", ") { it.lexeme }
-                val body = stmt.body.joinToString(" ") { print(it) }
+                val body = stmt.body.statements.joinToString(" ") { print(it) }
                 "(function ${stmt.name.lexeme} ($params) { $body })"
             }
             is Stmt.Block -> {

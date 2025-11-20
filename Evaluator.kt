@@ -18,7 +18,7 @@ class Evaluator {
                         }
                     }
 
-                    TokenType.BANG -> !isTruthy(right)
+                    TokenType.BANG, TokenType.NOT, TokenType.DEHINS -> !isTruthy(right)
 
                     else -> null
                 }

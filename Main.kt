@@ -17,11 +17,15 @@ fun main() {                                                                    
         val parser = Parser(tokens)                                                           // to create parser for those tokens
         val statements = parser.parse()                                                       // to parse tokens into statements (AST)
 
-        if(expr != null) {                                                                    // if parsing was successful
+        if(statements.isNotEmpty()) {                                                                    // if parsing was successful
               try {
                 //evaluate the expr
-                val result = evaluator.evaluate(expr)
-                println(valueToString(result))     // print final evaluated value
+                for (stmt in statements){
+                    if (stmt is Stmt.Expression) {
+                        val result = evaluator.evaluate(stmt.expression)
+                        println(valueToString(result))
+                    }
+                }
 
             } catch (e: RuntimeError) {
                 //to handle runtime errors

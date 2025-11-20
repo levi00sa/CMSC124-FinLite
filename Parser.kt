@@ -22,7 +22,7 @@ class Parser(private val tokens: List<Token>) {
     private fun declaration(): Stmt {
         try {
             if (match(TokenType.CLASS)) return classDeclaration()
-            if (match(TokenType.FUN, TokenType.FN, TokenType.EKSENA)) return functionDeclaration("function")
+            if (match(TokenType.FUN, TokenType.EKSENA)) return functionDeclaration("function")
             if (match(TokenType.VAR, TokenType.MAY)) return varDeclaration()
             return statement()
         } catch (err: ParseError) {
@@ -52,6 +52,14 @@ class Parser(private val tokens: List<Token>) {
             val value = expression()
             consumeOptionalSemicolon()
             return Stmt.Print(value)
+        }
+        if (match(TokenType.PAK)) {
+            // Handle "pak x = value" as assignment statement
+            val name = consume(TokenType.IDENTIFIER, "Expect variable name after 'pak'.")
+            consume(TokenType.EQUAL, "Expect '=' after variable name.")
+            val value = expression()
+            consumeOptionalSemicolon()
+            return Stmt.Expression(Expr.Assign(name, value))
         }
 
         // Default case: Expression statement
@@ -228,8 +236,8 @@ class Parser(private val tokens: List<Token>) {
         if (match(TokenType.NUMBER, TokenType.STRING))
             return Expr.Literal(previous().literal)
         if (match(TokenType.TRUE, TokenType.OMSIM)) return Expr.Literal(true)
-        if (match(TokenType.FALSE, TokenType.DEHINS)) return Expr.Literal(false)
-        if (match(TokenType.NIR, TokenType.NULL)) return Expr.Literal(null)
+        if (match(TokenType.FALSE, TokenType.CHAROT)) return Expr.Literal(false)
+        if (match(TokenType.NULL, TokenType.OLATS)) return Expr.Literal(null)
         if (match(TokenType.IDENTIFIER)) return Expr.Variable(previous())
         if (match(TokenType.LEFT_PAREN)) {
             val expr = expression()
