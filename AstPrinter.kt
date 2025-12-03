@@ -1,3 +1,9 @@
+package finlite
+import finlite.TokenType.*
+import finlite.Stmt.*
+import finlite.Expr.*
+
+
 object AstPrinter {
     fun print(stmt: Stmt): String =
         when (stmt) {
@@ -13,8 +19,16 @@ object AstPrinter {
                 val elsePart = stmt.elseBranch?.let { " ${print(it)}" } ?: ""
                 "(if ${printExpr(stmt.condition)} ${print(stmt.thenBranch)}$elsePart)"
             }
+            is Stmt.Scenario -> {
+                val body = stmt.statements.joinToString(" ") { print(it) }
+                "(scenario ${stmt.name.lexeme} $body)"
+            }
+            is FinanceStmt.LedgerEntryStmt -> printLedgerEntry(stmt)
+            is FinanceStmt.PortfolioStmt  -> printPortfolio(stmt)
+            is FinanceStmt.ScenarioStmt   -> printScenario(stmt)
+            is FinanceStmt.SimulateStmt   -> printSimulate(stmt)
+            is FinanceStmt.RunStmt -> printRun(stmt)
         }
-
     fun printExpr(expr: Expr): String =
         when (expr) {
             is Expr.Literal -> literalToString(expr.value)
@@ -37,6 +51,7 @@ object AstPrinter {
                 val elems = expr.elements.joinToString(", ") { printExpr(it) }
                 "[ $elems ]"
             }
+            else -> expr.toString()
         }
 
     private fun literalToString(value: Any?): String =
@@ -47,6 +62,29 @@ object AstPrinter {
             is String -> "\"$value\""
             else -> value.toString()
         }
+    // ============
+    // HELPERS
+    // ============
+    private fun printLedgerEntry(entry: FinanceStmt.LedgerEntryStmt): String =
+        "(ledger ${entry.type.name.lowercase()} ${entry.account.lexeme} ${printExpr(entry.amount)})"
+
+    private fun printPortfolio(stmt: FinanceStmt.PortfolioStmt): String {
+        val entries = stmt.entries.joinToString(" ") { printLedgerEntry(it) }
+        return "(portfolio ${stmt.name.lexeme} $entries)"
+    }
+
+    private fun printScenario(stmt: FinanceStmt.ScenarioStmt): String =
+        "(scenario ${stmt.name.lexeme} ${print(stmt.body)})"
+
+    private fun printSimulate(stmt: FinanceStmt.SimulateStmt): String {
+        val runs = stmt.runs?.let { " runs=${printExpr(it)}" } ?: ""
+        val step = stmt.step?.let { " step=${printExpr(it)}" } ?: ""
+        return "(simulate ${stmt.scenarioName.lexeme}$runs$step)"
+    }
+    private fun printRun(stmt: FinanceStmt.RunStmt): String {
+        return "(run ${stmt.scenarioName.lexeme} on ${stmt.modelName.lexeme})"
+    }
+
 }
 
 /*

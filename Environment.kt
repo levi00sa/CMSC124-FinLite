@@ -1,11 +1,17 @@
+package finlite
+import finlite.Callable
+
 class Environment(
     private val enclosing: Environment? = null
 ) {
     private val values = mutableMapOf<String, Any?>()
+    private val functions = mutableMapOf<String, FinLiteFunction>()
 
     fun define(name: String, value: Any?) { 
         values[name] = value 
     }
+
+    fun defineFunc(name: String, fn: FinLiteFunction) { functions[name] = fn }
 
     fun assign(name: String, value: Any?) {
         if (values.containsKey(name)) {
@@ -22,7 +28,7 @@ class Environment(
             "Undefined variable '$name'"
         )
     }
-
+    
     fun get(name: String): Any? {
         // Check current scope first
         if (values.containsKey(name)) {
@@ -38,12 +44,12 @@ class Environment(
             "Undefined variable '$name'"
         )
     }
-    
-    /**
-     * Creates a new environment with this environment as the enclosing scope.
-     * Used for block statements to create nested scopes.
-     */
-    fun createChild(): Environment {
+    fun createChild(): Environment{
         return Environment(this)
     }
+
+    fun getOrNull(name: String): Any? = 
+        if (values.containsKey(name)) values[name] else null
+
 }
+

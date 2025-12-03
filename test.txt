@@ -1,14 +1,18 @@
-let greeting = "Hello"
-let name = "World"
-print greeting + ", " + name + "!"
-let x = 10
-let y = 20
-{
-let x = 5 // shadows outer x
-print "Inner x: " + x
-print "Outer y: " + y
-}
-print "Outer x: " + x
-// Reassignment
-set x = x + y
-print "x + y = " + x
+LET CF = TABLE(
+    YEAR:    [1, 2, 3],
+    INFLOW:  [80000, 85000, 90000],
+    OUTFLOW: [30000, 35000, 40000]
+)
+
+LET netCF = CF.INFLOW - CF.OUTFLOW
+
+LET rate = 0.11
+LET npv = NPV(netCF, rate)
+
+PRINT "NPV =" + npv
+
+IF npv > 0 THEN
+    PRINT "Decision: ACCEPT project."
+ELSE
+    PRINT "Decision: REJECT project."
+END

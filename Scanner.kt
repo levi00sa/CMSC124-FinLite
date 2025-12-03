@@ -1,30 +1,116 @@
-class Scanner(private val source: String) {
+package finlite
 
+class Scanner(private val source: String) {
+    val tokens = mutableListOf<Token>()
     private var start = 0                // start index of current lexeme
     private var current = 0              // index currently being read
     private var line = 1                 // line counter (for error reporting)
 
-    private val tokens = mutableListOf<Token>()
-    private val indentStack = mutableListOf<Int>()  // Track indentation levels
-    private var atStartOfLine = true     // Track if we're at start of a line
 
-    // PUBLIC: scanTokens() – entry point
+    private val indentStack = ArrayDeque<Int>()  // Track indentation levels
+    private var indentLevel = 0
+    private var atStartOfLine = true     // Track if we're at start of a line
+    private var parenDepth = 0           // Track parentheses nesting
+    private var bracketDepth = 0         // Track bracket nesting
+    private var braceDepth = 0           // Track brace nesting
+
     fun scanTokens(): List<Token> {
+        indentStack.addLast(0)
+
         while (!isAtEnd()) {
             start = current
-            if (atStartOfLine) {
-                handleIndentation()
-            }
             scanToken()
         }
 
-        while (indentStack.isNotEmpty()) {
-            indentStack.removeAt(indentStack.size - 1)
-            tokens.add(Token(TokenType.DEDENT, "", null, line))
-        }
+        addToken(TokenType.EOF)
 
-        tokens.add(Token(TokenType.EOF, "", null, line))
         return tokens
+    }
+
+    private fun scanToken() {
+        
+        if (atStartOfLine) {
+            handleIndentation()
+            atStartOfLine = false
+        }
+        val c = advance()
+        when (c) {
+
+            // Delimiters
+            '(' -> {parenDepth++; addToken(TokenType.LEFT_PAREN)}
+            ')' -> {parenDepth--;addToken(TokenType.RIGHT_PAREN)}
+            '[' -> {bracketDepth++;addToken(TokenType.LEFT_BRACKET)}
+            ']' -> {bracketDepth--;addToken(TokenType.RIGHT_BRACKET)}
+            '{' -> {braceDepth++;addToken(TokenType.LEFT_BRACE)}
+            '}' -> {braceDepth--;addToken(TokenType.RIGHT_BRACE)}
+            ',' -> addToken(TokenType.COMMA)
+            ':' -> addToken(TokenType.COLON)
+            '.' -> addToken(TokenType.DOT)
+            // Arithmetic
+            '+' -> addToken(TokenType.PLUS)
+            '-' -> addToken(TokenType.MINUS)
+            '*' -> addToken(TokenType.STAR)
+            '%' -> addToken(TokenType.PERCENT)
+            '^' -> addToken(TokenType.CARET)
+
+            // Slash / comments
+            '/' -> {
+                if (match('/')) {
+                    while (peek() != '\n' && !isAtEnd()) advance()
+                } else if (match('*')) {
+                    handleBlockComment()
+                } else {
+                    addToken(TokenType.SLASH)
+                }
+            }
+            '#' -> {
+                while (peek() != '\n' && !isAtEnd()) advance()
+            }
+
+            // Comparison
+            '=' -> addToken(if (match('=')) TokenType.EQUAL_EQUAL else TokenType.EQUAL)
+            '!' -> addToken(if (match('=')) TokenType.BANG_EQUAL else TokenType.BANG)
+            '<' -> addToken(if (match('=')) TokenType.LESS_EQUAL else TokenType.LESS)
+            '>' -> addToken(if (match('=')) TokenType.GREATER_EQUAL else TokenType.GREATER)
+
+            // Logical operators
+            '&' -> {
+                if (match('&')) addToken(TokenType.AND_AND)
+                else addToken(TokenType.ERROR, "&")
+            }
+            '|' -> {
+                if (match('|')) addToken(TokenType.OR_OR)
+                else addToken(TokenType.ERROR, "|")
+            }
+
+            // Strings
+            '"' -> {
+                if (match('"') && match('"')) multilineString()
+                else string()
+            }
+
+            // Whitespace
+            ' ', '\r', '\t' -> {/*ignored*/}
+            
+            // Newline
+            '\n' -> {
+                line++
+                addToken(TokenType.NEWLINE)
+                atStartOfLine = true
+                start = current
+                return
+            }
+
+            // Literals & identifiers
+            else -> when {
+                c.isDigit() -> numberOrMoneyOrDate()
+                c.isLetter() || c == '_' -> identifierOrKeywordOrMoney()
+                else -> {
+                    error("Unexpected character '$c'")
+                    addToken(TokenType.ERROR, c.toString())
+                }
+            }
+        }
     }
 
     // Basic helpers
@@ -51,120 +137,35 @@ class Scanner(private val source: String) {
     }
 
     private fun handleIndentation() {
-        var indentLevel = 0
-        while (peek() == ' ' || peek() == '\t') {
-            if (peek() == ' ') {
-                indentLevel++
-            } else if (peek() == '\t') {
-                indentLevel += 4 // Treat tab as 4 spaces
+        // Don't track indentation if we're inside parentheses, brackets, or braces
+        if (parenDepth > 0 || bracketDepth > 0 || braceDepth > 0) return
+        
+        var spaces = 0
+        var i = current
+
+        while (i < source.length) {
+            when (source[i]) {
+                ' '  -> { spaces++; i++ }
+                '\t' -> { spaces += 4; i++ }
+                else -> break
             }
-            advance()
         }
-        
-        // Skip if line is empty (only whitespace)
-        if (peek() == '\n' || isAtEnd()) {
-            atStartOfLine = false
-            return
-        }
-        
-        val currentIndent = if (indentStack.isEmpty()) 0 else indentStack.last()
-        
-        if (indentLevel > currentIndent) {
-                                                                                                        // Indent
-            indentStack.add(indentLevel)
-            tokens.add(Token(TokenType.INDENT, "", indentLevel, line))
-        } else if (indentLevel < currentIndent) {
-                                                                                                        // Dedent
-            while (indentStack.isNotEmpty() && indentStack.last() > indentLevel) {
-                indentStack.removeAt(indentStack.size - 1)
-                tokens.add(Token(TokenType.DEDENT, "", null, line))
-            }
-            if (indentStack.isEmpty() || indentStack.last() != indentLevel) {
-                println("Error: inconsistent indentation at line $line")
+
+        current = i
+        start = current
+
+        if (spaces > indentStack.last()) {
+            indentStack.addLast(spaces)
+            addToken(TokenType.INDENT)
+        } else {
+            while (spaces < indentStack.last()) {
+                indentStack.removeLast()
+                addToken(TokenType.DEDENT)
             }
         }
         
-        atStartOfLine = false
-    }
-
-
-    private fun scanToken() {
-        val c = advance()
-
-        when (c) {
-
-            // Delimiters
-            '(' -> addToken(TokenType.LEFT_PAREN)
-            ')' -> addToken(TokenType.RIGHT_PAREN)
-            '[' -> addToken(TokenType.LEFT_BRACKET)
-            ']' -> addToken(TokenType.RIGHT_BRACKET)
-            '{' -> addToken(TokenType.LEFT_BRACE)
-            '}' -> addToken(TokenType.RIGHT_BRACE)
-            ',' -> addToken(TokenType.COMMA)
-            ':' -> addToken(TokenType.COLON)
-            '.' -> addToken(TokenType.DOT)
-
-            // Arithmetic
-            '+' -> addToken(TokenType.PLUS)
-            '-' -> addToken(TokenType.MINUS)
-            '*' -> addToken(TokenType.STAR)
-            '%' -> addToken(TokenType.PERCENT)
-            '^' -> addToken(TokenType.CARET)
-
-            // Slash / comments
-            '/' -> {
-                if (match('/')) {
-                    while (peek() != '\n' && !isAtEnd()) advance()
-                } else if (match('*')) {
-                    handleBlockComment()
-                } else {
-                    addToken(TokenType.SLASH)
-                }
-            }
-
-            // Comparison
-            '=' -> addToken(if (match('=')) TokenType.EQUAL_EQUAL else TokenType.EQUAL)
-            '!' -> addToken(if (match('=')) TokenType.BANG_EQUAL else TokenType.BANG)
-            '<' -> addToken(if (match('=')) TokenType.LESS_EQUAL else TokenType.LESS)
-            '>' -> addToken(if (match('=')) TokenType.GREATER_EQUAL else TokenType.GREATER)
-
-            // Logical operators
-            '&' -> {
-                if (match('&')) addToken(TokenType.AND_AND)
-                else addToken(TokenType.ERROR, "&")
-            }
-            '|' -> {
-                if (match('|')) addToken(TokenType.OR_OR)
-                else addToken(TokenType.ERROR, "|")
-            }
-
-            // Strings
-            '"' -> {
-                if (match('"') && match('"')) multilineString()
-                else string()
-            }
-
-            // Whitespace
-            ' ', '\r', '\t' -> {}
-            
-            // Newline
-            '\n' -> {
-                line++
-                atStartOfLine = true
-                addToken(TokenType.NEWLINE)
-            }
-
-            // Literals & identifiers
-            else -> when {
-                c.isDigit() -> numberOrMoneyOrDate()
-                c.isLetter() || c == '_' -> identifierOrKeywordOrMoney()
-                else -> {
-                    error("Unexpected character '$c'")
-                    addToken(TokenType.ERROR, c.toString())
-                }
-            }
+        if (peek() == '\n' || isAtEnd()) return
         }
-    }
 
     // Block comment scanning
     private fun handleBlockComment() {
@@ -183,12 +184,22 @@ class Scanner(private val source: String) {
     // NUMBERS, MONEY, DATES
     private fun numberOrMoneyOrDate() {
 
-        while (peek().isDigit() || peek() == '_' || peek() == ',') advance()
+        while (peek().isDigit() || peek() == '_') advance()
+        // Handle commas only when followed by digits (for thousand separators)
+        while (peek() == ',' && peekNext().isDigit()) {
+            advance() // consume comma
+            while (peek().isDigit() || peek() == '_') advance()
+        }
 
         // Decimal fraction
         if (peek() == '.' && peekNext().isDigit()) {
             advance()
-            while (peek().isDigit() || peek() == '_' || peek() == ',') advance()
+            while (peek().isDigit() || peek() == '_') advance()
+            // Handle commas in decimal part only when followed by digits
+            while (peek() == ',' && peekNext().isDigit()) {
+                advance() // consume comma
+                while (peek().isDigit() || peek() == '_') advance()
+            }
         }
 
         val raw = source.substring(start, current)

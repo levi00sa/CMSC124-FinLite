@@ -1,3 +1,7 @@
+package finlite
+
+
+
 sealed class Expr {
     data class Literal(val value: Any?) : Expr()
     data class Variable(val name: Token) : Expr()
@@ -6,6 +10,9 @@ sealed class Expr {
     data class Grouping(val expression: Expr) : Expr()
     data class Call(val callee: Expr, val paren: Token, val arguments: List<Expr>) : Expr()
     data class ListLiteral(val elements: List<Expr>) : Expr()
+    data class Assign(val name: Token, val value: Expr) : Expr()
+    data class Subscript(val container: Expr, val index: Expr, val end: Expr?, val bracket: Token) : Expr()
+    data class Get(val obj: Expr, val name: Token) : Expr()
 }
 
 sealed class Stmt {
@@ -21,6 +28,8 @@ sealed class Stmt {
         val thenBranch: Stmt,
         val elseBranch: Stmt?
     ) : Stmt()
+
+    data class Scenario(val name: Token, val statements: List<Stmt>) : Stmt()
 }
 
 /*
