@@ -28,6 +28,7 @@ class Parser(private val tokens: List<Token>) {
             match(SET) -> setStmt()
             match(PRINT, LOG) -> printStmt()
             match(IF) -> ifStmt()
+            match(WHILE)->whileStmt()
             match(RUN) -> runStmt()
             match(RETURN) -> returnStmt()
             match(SCENARIO) -> scenarioStatement()
@@ -142,6 +143,30 @@ class Parser(private val tokens: List<Token>) {
 
         return Stmt.IfStmt(condition, thenBranch, elseBranch)
     }
+
+        private fun whileStmt(): Stmt {
+        val condition = expression()
+        match(DO) // optional DO
+        consume(NEWLINE, "Expect newline after WHILE condition.")
+
+        val body = if (match(INDENT)) {
+            val stmts = mutableListOf<Stmt>()
+            while (!check(DEDENT) && !isAtEnd()) {
+                skipNewlines()
+                if (check(DEDENT)) break
+                stmts.add(statement())
+            }
+            consume(DEDENT, "Expect end of WHILE block.")
+            Stmt.Block(stmts)
+        } else {
+            block()
+        }
+
+        consume(END, "Expect END after WHILE.")
+        consume(NEWLINE, "Expect newline after END.")
+        return Stmt.WhileStmt(condition, body)
+    }
+
 
     private fun block(): Stmt {
         val statements = mutableListOf<Stmt>()

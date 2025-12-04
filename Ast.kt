@@ -1,7 +1,5 @@
 package finlite
 
-
-
 sealed class Expr {
     data class Literal(val value: Any?) : Expr()
     data class Variable(val name: Token) : Expr()
@@ -27,6 +25,11 @@ sealed class Stmt {
         val condition: Expr,
         val thenBranch: Stmt,
         val elseBranch: Stmt?
+    ) : Stmt()
+
+    data class WhileStmt(
+        val condition: Expr,
+        val body: Stmt
     ) : Stmt()
 
     data class Scenario(val name: Token, val statements: List<Stmt>) : Stmt()

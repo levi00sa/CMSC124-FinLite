@@ -30,6 +30,7 @@ enum class TokenType {
     // Keywords
     LET, SET,
     IF, THEN, ELSE, ELSEIF, END,
+    WHILE, DO, FOR,
     PRINT, LOG,
 
     TABLE, CASHFLOW, TIMESERIES,

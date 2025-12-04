@@ -49,6 +49,12 @@ class Interpreter (
                 }
             }
 
+            is Stmt.WhileStmt -> {
+                while (isTruthy(evaluate(stmt.condition))) {
+                    execute(stmt.body)
+                }
+            }
+
             is Stmt.ReturnStmt -> {
                 val value = stmt.value?.let { evaluate(it) }
                 throw ReturnValue(value)
