@@ -118,6 +118,42 @@ object FinLiteStandardLib {
             pv * Math.pow(1 + rate, nper.toDouble()) +
                     pmt * ((Math.pow(1 + rate, nper.toDouble()) - 1) / rate)
         })
+
+        env.define("ASSERT", interpreter.builtin { args ->
+        val cond = args[0] as? Boolean ?: false
+        val msg = args.getOrNull(1)?.toString() ?: "Assertion failed."
+        if (!cond) throw RuntimeException(msg)
+        null
+    })
+
+    env.define("ERROR", interpreter.builtin { args ->
+        throw RuntimeException(args.joinToString(" "))
+    })
+
+    env.define("MAP", interpreter.builtin { args ->
+        val list = args[0] as List<*>
+        val fn = args[1] as Callable
+        list.map { fn.call(interpreter, listOf(it)) }
+    })
+
+    env.define("AGGREGATE", interpreter.builtin { args ->
+        val list = convertToDoubleList(args[0])
+        when (args[1].toString().uppercase()) {
+            "SUM" -> list.sum()
+            "AVG" -> list.average()
+            "MIN" -> list.minOrNull()
+            "MAX" -> list.maxOrNull()
+            else -> throw RuntimeException("Unknown AGGREGATE type.")
+        }
+    })
+
+    env.define("LOG", interpreter.builtin { args ->
+        println("[LOG] " + args.joinToString(" "))
+        null
+    })
+
+
+
     }
 
     // ------------------------------------------------------------

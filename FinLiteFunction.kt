@@ -8,7 +8,13 @@ val declaration: Function<Unit>?,
 ) {
     fun call(args: List<Any?>): Any? {
         require(args.size == arity) { "Expected $arity arguments but got ${args.size}." }
-        return body(args)
+
+        return try {
+            body(args)
+        } catch (r: ReturnValue) {
+            r.value
+        }
     }
+
 }
 

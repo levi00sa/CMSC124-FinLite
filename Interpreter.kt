@@ -1,6 +1,8 @@
 package finlite
 import finlite.Callable.*
 
+class ReturnValue(val value: Any?) : RuntimeException(null, null, false, false)
+
 class Interpreter (
     private val environment: Environment,
     private val finance: FinanceInterpreter
@@ -28,10 +30,13 @@ class Interpreter (
                 println(valueToString(result))
             }
 
-            is Stmt.Block -> { 
-                // Execute statements in current environment, not a new child
-                for (statement in stmt.statements) {
-                    execute(statement)
+            is Stmt.Block -> {
+                try {
+                    for (statement in stmt.statements) {
+                        execute(statement)
+                    }
+                } catch (r: ReturnValue) {
+                    throw r
                 }
             }
 
@@ -42,6 +47,17 @@ class Interpreter (
                 } else {
                     stmt.elseBranch?.let { execute(it) }
                 }
+            }
+
+            is Stmt.WhileStmt -> {
+                while (isTruthy(evaluate(stmt.condition))) {
+                    execute(stmt.body)
+                }
+            }
+
+            is Stmt.ReturnStmt -> {
+                val value = stmt.value?.let { evaluate(it) }
+                throw ReturnValue(value)
             }
 
             is Stmt.Scenario -> {

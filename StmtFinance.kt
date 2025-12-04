@@ -38,4 +38,7 @@ sealed class FinanceStmt : Stmt() {
         val runs: Expr?,
         val step: Expr?
     ) : FinanceStmt()
+
+    data class ReturnStmt(val value: Expr?) : Stmt()
+
 }

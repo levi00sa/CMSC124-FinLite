@@ -5,7 +5,12 @@ class Evaluator (val environment: Environment){
 
     fun evaluate(expr: Expr): Any? {
         return when (expr) {
-            is Expr.Literal -> expr.value
+            is Expr.Literal -> when (expr.value) {
+                is String -> expr.value
+                is Double -> expr.value
+                is String -> expr.value
+                else -> expr.value
+            }
 
             is Expr.Variable -> environment.get(expr.name.lexeme)
 

@@ -7,4 +7,5 @@ sealed class Value {
     data class PortfolioVal(val accounts: Map<String, Double>) : Value()
     data class BlockVal(val block: Stmt.Block) : Value()
     data class TableValue(val columns: List<String>, val data: Map<String, List<Value>>) : Value()
+    data class DateVal(val value: String) : Value()
 }

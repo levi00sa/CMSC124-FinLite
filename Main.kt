@@ -7,8 +7,7 @@ import java.io.InputStreamReader
 fun main() {
     val globalEnvironment = Environment()
     val coreEvaluator = Evaluator(globalEnvironment)
-    val financeInterpreter = FinanceInterpreter(coreEvaluator)
-    val interpreter = Interpreter(globalEnvironment, financeInterpreter)
+      val interpreter = Interpreter(globalEnvironment, financeInterpreter)
     
     // Load standard library with interpreter
     FinLiteStandardLib.loadInto(globalEnvironment, interpreter)
