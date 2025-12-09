@@ -15,6 +15,50 @@ class FinanceParser(private val parser: Parser) {
                 val modelName = parser.consume(IDENTIFIER, "Expect model name after ON.")
                 FinanceStmt.RunStmt(scenarioName, modelName)
             }
+            parser.check(SIMULATE) -> {
+                parser.advance() // consume SIMULATE
+                val scenarioName = parser.consume(IDENTIFIER, "Expect scenario name after SIMULATE.")
+                var runs: Expr? = null
+                var step: Expr? = null
+
+                // Optional RUNS <expr> or plain numeric runs following the name
+                if (parser.match(RUNS)) {
+                    runs = parser.parseExpression()
+                } else if (!parser.check(NEWLINE) && !parser.check(INDENT) && !parser.check(DEDENT)) {
+                    // Allow SIMULATE <name> <runs> (e.g. SIMULATE Example 3 1)
+                    runs = parser.parseExpression()
+                }
+
+                // Optional STEP <expr> or plain numeric step following the runs
+                if (parser.match(STEP)) {
+                    step = parser.parseExpression()
+                } else if (!parser.check(NEWLINE) && !parser.check(INDENT) && !parser.check(DEDENT)) {
+                    step = parser.parseExpression()
+                }
+
+                // Expect newline after SIMULATE statement
+                parser.consume(NEWLINE, "Expect newline after SIMULATE statement.")
+
+                FinanceStmt.SimulateStmt(scenarioName, runs, step)
+            }
+            
+            parser.check(SCENARIO) -> {
+                // Finance-style SCENARIO with an indented body
+                parser.advance() // consume SCENARIO
+                val name = parser.consume(IDENTIFIER, "Expect scenario name after SCENARIO.")
+                parser.consume(NEWLINE, "Expect newline after SCENARIO header.")
+                parser.consume(INDENT, "Expect indented block for SCENARIO body.")
+
+                val stmts = mutableListOf<Stmt>()
+                while (!parser.check(DEDENT) && !parser.isAtEnd()) {
+                    parser.skipNewlines()
+                    if (parser.check(DEDENT)) break
+                    stmts.add(parser.statement())
+                }
+
+                parser.consume(DEDENT, "Expect end of SCENARIO block.")
+                FinanceStmt.ScenarioStmt(name, Stmt.Block(stmts))
+            }
             parser.check(PORTFOLIO) -> {
                 parser.advance() // consume PORTFOLIO
                 val name = parser.consume(IDENTIFIER, "Expect portfolio name.")
@@ -30,6 +74,7 @@ class FinanceParser(private val parser: Parser) {
 
                 FinanceStmt.PortfolioStmt(name, entries)
             }
+            
             else -> null
         }
     }
@@ -99,6 +144,7 @@ class FinanceParser(private val parser: Parser) {
 
                 FinanceExpr.PortfolioLiteral(assets, weights)
             }
+            
             else -> null
         }
     }

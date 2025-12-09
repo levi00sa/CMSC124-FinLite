@@ -45,11 +45,41 @@ sealed class RuntimeValue {
         
         override fun toString(): kotlin.String {
             if (columns.isEmpty()) return "TABLE()"
-            val names = columns.keys.joinToString(", ")
-            val rows = columns.values.first().indices.map { row: Int ->
-                columns.values.map { col: kotlin.collections.List<kotlin.Double> -> col[row] }.joinToString(", ")
+
+            // Prepare headers and rows as strings
+            val colNames = columns.keys.toList()
+            val nCols = colNames.size
+            val nRows = columns.values.first().size
+
+            // Convert numeric values to nicely formatted strings
+            val rows: List<List<kotlin.String>> = (0 until nRows).map { r ->
+                colNames.map { col ->
+                    val v = columns[col]!![r]
+                    // Format doubles: drop .0 for whole numbers
+                    if (v == v.toLong().toDouble()) v.toLong().toString() else v.toString()
+                }
             }
-            return "TABLE($names)\n  [${rows.joinToString("]\n  [")}]"
+
+            // Compute column widths
+            val widths = IntArray(nCols)
+            for (i in 0 until nCols) {
+                val nameLen = colNames[i].length
+                val maxCell = rows.map { it[i].length }.maxOrNull() ?: 0
+                widths[i] = maxOf(nameLen, maxCell)
+            }
+
+            // Build header (column names padded with one space on each side)
+            val headerRow = colNames.mapIndexed { i, name -> " ${name.padEnd(widths[i])} " }.joinToString("|")
+
+            // Build divider matching padded widths
+            val divider = widths.map { "-".repeat(it + 2) }.joinToString("+")
+
+            // Build formatted rows with one-space padding around each cell
+            val body = rows.joinToString("\n") { row ->
+                row.mapIndexed { i, cell -> " ${cell.padEnd(widths[i])} " }.joinToString("|")
+            }
+
+            return "TABLE(${colNames.joinToString(", ")})\n" + headerRow + "\n" + divider + "\n" + body
         }
     }
     
@@ -123,6 +153,25 @@ sealed class RuntimeValue {
             require(unit in listOf("days", "months", "years")) { "Invalid time unit: $unit" }
         }
         override fun toString() = "$value $unit"
+    }
+
+    /** Object with named fields */
+    data class Object(val fields: kotlin.collections.Map<kotlin.String, RuntimeValue?>) : RuntimeValue() {
+        fun getField(name: kotlin.String): RuntimeValue? = fields[name]
+        override fun toString(): kotlin.String {
+            if (fields.isEmpty()) return "{}"
+            val entries = fields.entries.joinToString(", ") { (k, v) -> "$k: ${v?.toString() ?: "null"}" }
+            return "{ $entries }"
+        }
+    }
+
+    /** Lambda value (closure) with captured environment */
+    data class Lambda(
+        val params: kotlin.collections.List<Token>,
+        val body: Expr,
+        val capturedEnv: Environment
+    ) : RuntimeValue() {
+        override fun toString() = "<lambda(${params.size} params)>"
     }
 }
 

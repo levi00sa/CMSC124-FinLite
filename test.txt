@@ -1,21 +1,144 @@
+
+# Short example: scenario sets a `result` and is run on the built-in `valuation_model`.
+# The standard `valuation_model` reads `rate` and `growth` from the scenario's local environment.
 ###
+LET rate = 0.10
+LET growth = 0.08
+
+SCENARIO Bull
+   LET rate = 0.09
+   LET growth = 0.12
+
+SCENARIO Bear
+   LET rate = 0.13
+   LET growth = 0.03
+
+RUN Bull ON valuation_model
+RUN Bear ON valuation_model
+
+# SIMULATE runs the scenario multiple times and stores results in `lastSimulation`.
+SCENARIO Example
+   LET rate = 0.07
+   LET growth = 0.05
+   LET result = rate * growth
+
+SIMULATE Example RUNS 3 STEP 1
+PRINT lastSimulation
+
+(exercise element-wise addition)
+LET a = [1, 2, 3]
+LET b = [4, 5, 6]
+PRINT sum(a)
+PRINT avg(a)
+PRINT a + b
+
+#Test string slicing/subscript:
 LET s = "string"
-LET t = s[0:1] + "k" + s[2:]   # "skring"
-PRINT s
-PRINT t
+
+PRINT s[0] # "s"
+
+PRINT s[0:2] # "st"
+
+LET t = s[0:1] + "k" + s[2:]
+
+PRINT t # "skring"
 
 
+#Test finance calls (NPV/IRR/PV):
+PRINT NPV([-100, 60, 60], 0.1)
 
-FOR i = 1 IN 5
-    PRINT i
-END
+PRINT IRR([-100, 60, 60])
+
+#Test TABLE and column access:
+
+LET tbl = TABLE(
+year: [2020, 2021, 2022],
+sales: [200, 134, 145]
+)
+PRINT tbl.sales
+
+PRINT len(tbl.sales)
+
+#Test MAP/AGGREGATE:
+LET vals = [1, 2, 3, 4]
+PRINT MAP(vals, len)
+
+PRINT AGGREGATE(vals, "SUM")
+
+#using finance functions
+PRINT NPV([-100, 60, 60], 0.1)
+
+PRINT IRR([-100, 60, 60])
+
+PRINT CAPM(0.8, 0.02, 0.08)
+
+
+#using lambda:
+LET sales = [1, 2, 3, 4]
+LET total_sales = MAP(sales, x -> x * x)
+PRINT total_sales
+
+LET people = [
+{ name: "Ana", age: 17 },
+{ name: "Ben", age: 22 },
+{ name: "Carlo", age: 30 },
+{ name: "Dana", age: 15 }
+]
+
+LET adults = FILTER(people, p -> p.age >= 18)
+LET names = MAP(adults, p -> p.name)
+
+PRINT names
+
+# Test REDUCE: numeric sum (no initial)
+LET nums = [5, 10, 3, 7]
+LET sum = REDUCE(nums, (a, x) -> a + x)
+PRINT sum
+
+# Test REDUCE: product with initial value
+LET product = REDUCE([2, 3, 4], (a, x) -> a * x, 1)
+PRINT product
+
+# Test REDUCE: string concatenation
+LET words = ["Hello", "World", "!"]
+LET sentence = REDUCE(words, (a, x) -> a + " " + x)
+PRINT sentence
+
+# Test REDUCE: building a sum with initial offset
+LET offset_sum = REDUCE([1, 2, 3], (a, x) -> a + x, 100)
+PRINT offset_sum
+
+LET sales = [1, 2, 3, 4]
+LET total_sales = MAP(sales, x -> x * x)
+PRINT total_sales
+
+LET people = [
+{ name: "Ana", age: 17 },
+{ name: "Ben", age: 22 },
+{ name: "Carlo", age: 30 },
+{ name: "Dana", age: 15 }
+]
+
+LET adults = FILTER(people, p -> p.age >= 18)
+LET names = MAP(adults, p -> p.name)
+
+PRINT names
 
 ###
 
-LET x=1
-WHILE x<= 3 DO
-    PRINT x
-    SET x = x +1
-END
+# Test lambdas directly
+LET f = (x) -> x * 2
+PRINT f(5)
 
+# Test MAP with lambda
+LET nums = [1, 2, 3, 4]
+LET doubled = MAP(nums, x -> x * 2)
+PRINT doubled
 
+# Test FILTER with lambda
+LET evens = FILTER(nums, x -> x > 2)
+PRINT evens
+
+# Test REDUCE with lambda
+LET sum = REDUCE(nums, (a, x) -> a + x)
+PRINT sum

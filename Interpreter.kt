@@ -173,6 +173,10 @@ class Interpreter (
 
     fun evaluate(expr: Expr): RuntimeValue? {
         return when (expr) {
+            is Expr.Lambda -> {
+                // Capture current environment for closure
+                RuntimeValue.Lambda(expr.params, expr.body, currentEnvironment)
+            }
             // Finance expressions
             is FinanceExpr -> evaluateFinanceExpr(expr)
             
@@ -323,13 +327,27 @@ class Interpreter (
 
             is Expr.ListLiteral -> 
                 RuntimeValue.ListValue(expr.elements.map { evaluate(it) })
+            is Expr.ObjectLiteral -> {
+                val evaluatedFields = mutableMapOf<String, RuntimeValue?>()
+                for ((key, valueExpr) in expr.fields) {
+                    evaluatedFields[key] = evaluate(valueExpr)
+                }
+                RuntimeValue.Object(evaluatedFields)
+            }
+            is Expr.Get -> {
+                val objVal = evaluate(expr.obj)
+                val propName = expr.name.lexeme
+                when (objVal) {
+                    is RuntimeValue.Object -> objVal.getField(propName) 
+                        ?: throw RuntimeError(expr.name, "Object has no field '$propName'.")
+                    is RuntimeValue.Table -> RuntimeValue.ListValue(
+                        objVal.getColumn(propName).map { RuntimeValue.Number(it) }
+                    )
+                    else -> throw RuntimeError(expr.name, "Cannot access property on ${objVal?.javaClass?.simpleName ?: "null"}.")
+                }
+            }
             is Expr.TimeSeries -> evaluateTimeSeries(expr)
             is Expr.Call -> evaluateCall(expr)
-            
-            else -> throw RuntimeError(
-                null,
-                "Unsupported expression: ${expr::class.simpleName}"
-            )
         }
     }
 
@@ -337,6 +355,11 @@ class Interpreter (
         val calleeVal = evaluate(expr.callee)
 
         val args = expr.arguments.map { evaluate(it) }
+
+        // Handle RuntimeValue.Lambda directly
+        if (calleeVal is RuntimeValue.Lambda) {
+            return callLambda(calleeVal, args)
+        }
 
         val callable = when (calleeVal) {
             is RuntimeValue.Function -> calleeVal.callable
@@ -376,6 +399,23 @@ class Interpreter (
             throw RuntimeError(expr.paren, "Error calling function: ${e.message}").apply {
                 initCause(e)
             }
+        }
+    }
+
+    fun callLambda(lambda: RuntimeValue.Lambda, args: List<RuntimeValue?>): RuntimeValue? {
+        if (args.size != lambda.params.size) {
+            throw RuntimeError(null, "Lambda expects ${lambda.params.size} arguments but got ${args.size}.")
+        }
+        val previousEnv = currentEnvironment
+        try {
+            currentEnvironment = Environment(lambda.capturedEnv)
+            // Bind parameters
+            for (i in lambda.params.indices) {
+                currentEnvironment.define(lambda.params[i].lexeme, args[i])
+            }
+            return evaluate(lambda.body)
+        } finally {
+            currentEnvironment = previousEnv
         }
     }
 
@@ -535,8 +575,8 @@ class Interpreter (
             }
             is RuntimeValue.String -> value.value
             is RuntimeValue.Bool -> value.value.toString()
-            is RuntimeValue.ListValue -> "[${value.elements.joinToString(", ") { valueToString(it) }}]"
-            is RuntimeValue.Table -> "<table with ${value.columns.size} columns>"
+            is RuntimeValue.ListValue -> "[${value.elements.joinToString(" ") { valueToString(it) }}]"
+            is RuntimeValue.Table -> value.toString()
             is RuntimeValue.Cashflow -> "Cashflow(${value.flows.size} entries)"
             is RuntimeValue.Portfolio -> "Portfolio(${value.assets.size} assets)"
             is RuntimeValue.Function -> "<function>"

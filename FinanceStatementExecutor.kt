@@ -82,7 +82,8 @@ class FinanceStatementExecutor(
             val child = environment.createChild()
             val local = Interpreter(child)
 
-            local.executeStmt(scenarioBlock)
+            // Execute scenario statements directly in the child environment so variables persist
+            local.executeBlock(scenarioBlock.statements, child)
             results.add(child.getOrNull("result"))
         }
 
@@ -103,7 +104,9 @@ class FinanceStatementExecutor(
         // Create child environment and execute scenario in it
         val child = environment.createChild()
         val local = Interpreter(child)
-        local.executeStmt(scenarioBlock)
+
+        // Execute scenario statements directly in the child environment so variables persist
+        local.executeBlock(scenarioBlock.statements, child)
 
         // Get the result and apply model if it's a function
         val result = child.getOrNull("result")

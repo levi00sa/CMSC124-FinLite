@@ -19,6 +19,8 @@ sealed class Expr {
     data class Subscript(val container: Expr, val index: Expr, val end: Expr?, val bracket: Token, val isSlice: Boolean = false) : Expr()
     data class Get(val obj: Expr, val name: Token) : Expr()
     data class TimeSeries(val source: Expr, val window: Expr) : Expr()
+    data class Lambda(val params: List<Token>, val body: Expr) : Expr()
+    data class ObjectLiteral(val fields: Map<String, Expr>) : Expr()
 }
 
 sealed class Stmt {

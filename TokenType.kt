@@ -42,6 +42,7 @@ val keywords: Map<String, TokenType> = mapOf(
     "run" to TokenType.RUN,
     "on" to TokenType.ON,
     "simulate" to TokenType.SIMULATE,
+    "runs" to TokenType.RUNS,
 
     "portfolio" to TokenType.PORTFOLIO,
     "entry" to TokenType.ENTRY,
@@ -79,6 +80,7 @@ enum class TokenType {
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACKET, RIGHT_BRACKET, LEFT_BRACE, RIGHT_BRACE, COMMA, DOT, COLON, SLASH,
 
     PLUS, MINUS, STAR, PERCENT, CARET,
+    ARROW,
 
     // One or two character tokens
     EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, AND_AND, OR_OR,
@@ -89,7 +91,7 @@ enum class TokenType {
     // Keywords
     LET, SET,IF, THEN, WHILE, FOR, ELSE, ELSEIF, END,PRINT, LOG, RETURN,
 
-    TABLE, CASHFLOW, TIMESERIES,COMPARE,SCENARIO, RUN, ON, SIMULATE,PORTFOLIO, ENTRY, DEBIT, CREDIT, LEDGER,
+    TABLE, CASHFLOW, TIMESERIES,COMPARE,SCENARIO, RUN, ON, SIMULATE, RUNS,PORTFOLIO, ENTRY, DEBIT, CREDIT, LEDGER,
 
     FROM, TO, STEP, IN, DO,
 

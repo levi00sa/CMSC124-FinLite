@@ -71,7 +71,6 @@ class Scanner(
             '.' -> addToken(TokenType.DOT)
             // Arithmetic
             '+' -> addToken(TokenType.PLUS)
-            '-' -> addToken(TokenType.MINUS)
             '*' -> addToken(TokenType.STAR)
             '%' -> addToken(TokenType.PERCENT)
             '^' -> addToken(TokenType.CARET)
@@ -84,6 +83,10 @@ class Scanner(
                     // single-line comment #
                     while (peek() != '\n' && !isAtEnd()) advance()
                 }
+            }
+
+            '-' -> {
+                if (match('>')) addToken(TokenType.ARROW) else addToken(TokenType.MINUS)
             }
 
             // Comparison

@@ -9,11 +9,17 @@ object FinLiteStandardLib {
         env.define("valuation_model", RuntimeValue.Function(object : Callable {
             override fun arity() = -1
             override fun call(ctx: Any?, arguments: List<Any?>): Any? {
-                val rate = when (val v = interpreter.getCurrentEnvironment().get("rate")) {
+                // Prefer the provided context environment when available (e.g., RUN uses a child env as ctx)
+                val lookupEnv = when (ctx) {
+                    is Environment -> ctx
+                    else -> interpreter.getCurrentEnvironment()
+                }
+
+                val rate = when (val v = lookupEnv.get("rate")) {
                     is RuntimeValue.Number -> v.value
                     else -> 0.0
                 }
-                val growth = when (val v = interpreter.getCurrentEnvironment().get("growth")) {
+                val growth = when (val v = lookupEnv.get("growth")) {
                     is RuntimeValue.Number -> v.value
                     else -> 0.0
                 }
@@ -25,11 +31,11 @@ object FinLiteStandardLib {
         // -------------------------
         // BASIC FUNCTIONS
         // -------------------------
-        env.define("print", RuntimeValue.Function(object : Callable {
+        env.define("show", RuntimeValue.Function(object : Callable {
             override fun arity() = -1
             override fun call(ctx: Any?, arguments: List<Any?>) = run {
                 println(arguments.joinToString(" "))
-                null
+                arguments.firstOrNull()  // Return the first argument after printing
             }
         }))
 
@@ -155,19 +161,158 @@ object FinLiteStandardLib {
                     else -> throw RuntimeException("MAP() first argument must be a list")
                 }
                 
-                // Extract the callable
-                val fn: Callable = when (fnArg) {
-                    is RuntimeValue.Function -> fnArg.callable
-                    is Callable -> fnArg
-                    else -> throw RuntimeException("MAP() second argument must be a function")
-                }
-                
-                // Map and return as List<RuntimeValue?>
-                return list.map { element -> 
-                    fn.call(ctx, listOf(element)) as? RuntimeValue
+                // Handle RuntimeValue.Lambda or Callable
+                return when (fnArg) {
+                    is RuntimeValue.Lambda -> {
+                        val interp = ctx as? Interpreter
+                            ?: throw RuntimeException("MAP with lambda requires interpreter context")
+                        list.map { element ->
+                            interp.callLambda(fnArg, listOf(element as? RuntimeValue))
+                        }
+                    }
+                    is RuntimeValue.Function -> {
+                        list.map { element ->
+                            fnArg.callable.call(ctx, listOf(element)) as? RuntimeValue
+                        }
+                    }
+                    is Callable -> {
+                        list.map { element ->
+                            fnArg.call(ctx, listOf(element)) as? RuntimeValue
+                        }
+                    }
+                    else -> throw RuntimeException("MAP() second argument must be a function or lambda")
                 }
             }
         }))
+
+        env.define("FILTER", RuntimeValue.Function(object : Callable {
+            override fun arity() = -1
+            override fun call(ctx: Any?, arguments: List<Any?>): Any? {
+                if (arguments.size < 2) throw RuntimeException("FILTER() requires 2 arguments")
+
+                val listArg = arguments[0]
+                val fnArg = arguments[1]
+
+                val list: List<*> = when (listArg) {
+                    is RuntimeValue.ListValue -> listArg.elements
+                    is List<*> -> listArg
+                    else -> throw RuntimeException("FILTER() first argument must be a list")
+                }
+
+                val result = mutableListOf<RuntimeValue?>()
+                
+                when (fnArg) {
+                    is RuntimeValue.Lambda -> {
+                        val interp = ctx as? Interpreter
+                            ?: throw RuntimeException("FILTER with lambda requires interpreter context")
+                        for (element in list) {
+                            val predicateResult = interp.callLambda(fnArg, listOf(element as? RuntimeValue))
+                            if (isTruthy(predicateResult)) {
+                                result.add(element as? RuntimeValue)
+                            }
+                        }
+                    }
+                    is RuntimeValue.Function -> {
+                        for (element in list) {
+                            val predicateResult = fnArg.callable.call(ctx, listOf(element))
+                            if (isTruthy(predicateResult)) {
+                                result.add(element as? RuntimeValue)
+                            }
+                        }
+                    }
+                    is Callable -> {
+                        for (element in list) {
+                            val predicateResult = fnArg.call(ctx, listOf(element))
+                            if (isTruthy(predicateResult)) {
+                                result.add(element as? RuntimeValue)
+                            }
+                        }
+                    }
+                    else -> throw RuntimeException("FILTER() second argument must be a function or lambda")
+                }
+
+                return RuntimeValue.ListValue(result)
+            }
+        }))
+
+        env.define("REDUCE", RuntimeValue.Function(object : Callable {
+            override fun arity() = -1
+
+            override fun call(ctx: Any?, arguments: List<Any?>): Any? {
+                if (arguments.size < 2) throw RuntimeException("REDUCE() requires at least 2 arguments: list and function")
+
+                val listArg = arguments[0]
+                val fnArg = arguments[1]
+
+                val list: List<*> = when (listArg) {
+                    is RuntimeValue.ListValue -> listArg.elements
+                    is List<*> -> listArg
+                    else -> throw RuntimeException("REDUCE() first argument must be a list")
+                }
+
+                if (list.isEmpty()) {
+                    if (arguments.size > 2) return arguments[2]
+                    throw RuntimeException("REDUCE() on empty list requires an initial value")
+                }
+
+                // Helper to coerce raw elements to RuntimeValue
+                fun toRuntimeValue(elem: Any?): RuntimeValue? {
+                    return when (elem) {
+                        is RuntimeValue -> elem
+                        is Double -> RuntimeValue.Number(elem)
+                        is Number -> RuntimeValue.Number(elem.toDouble())
+                        is String -> RuntimeValue.String(elem)
+                        is Boolean -> RuntimeValue.Bool(elem)
+                        null -> null
+                        else -> throw RuntimeException("Unsupported element type in REDUCE list: ${'$'}{elem::class.simpleName}")
+                    }
+                }
+
+                // Determine initial accumulator (coerced)
+                var accRaw: Any? = if (arguments.size > 2) {
+                    arguments[2]
+                } else {
+                    // use first element as initial accumulator
+                    list[0]
+                }
+                var acc: Any? = accRaw
+
+                val startIndex = if (arguments.size > 2) 0 else 1
+
+                when (fnArg) {
+                    is RuntimeValue.Lambda -> {
+                        val interp = ctx as? Interpreter
+                            ?: throw RuntimeException("REDUCE with lambda requires interpreter context")
+                        for (i in startIndex until list.size) {
+                            val element = list[i]
+                            val accArg = toRuntimeValue(acc)
+                            val elemArg = toRuntimeValue(element)
+                            acc = interp.callLambda(fnArg, listOf(accArg, elemArg))
+                        }
+                    }
+                    is RuntimeValue.Function -> {
+                        for (i in startIndex until list.size) {
+                            val element = list[i]
+                            val accArg = toRuntimeValue(acc)
+                            val elemArg = toRuntimeValue(element)
+                            acc = fnArg.callable.call(ctx, listOf(accArg, elemArg))
+                        }
+                    }
+                    is Callable -> {
+                        for (i in startIndex until list.size) {
+                            val element = list[i]
+                            val accArg = toRuntimeValue(acc)
+                            val elemArg = toRuntimeValue(element)
+                            acc = fnArg.call(ctx, listOf(accArg, elemArg))
+                        }
+                    }
+                    else -> throw RuntimeException("REDUCE() second argument must be a function or lambda")
+                }
+
+                return acc
+            }
+        }))
+
 
         env.define("AGGREGATE", RuntimeValue.Function(object : Callable {
             override fun arity() = -1
@@ -175,9 +320,11 @@ object FinLiteStandardLib {
                 if (arguments.size < 2) throw RuntimeException("AGGREGATE() requires 2 arguments")
                 
                 val list = convertToDoubleList(arguments[0])
-                val operation = arguments[1]?.toString()?.uppercase() 
-                    ?: throw RuntimeException("AGGREGATE() second argument must be a string")
-                
+                val operationArg = arguments[1]
+                val operation = when (operationArg) {
+                    is RuntimeValue.String -> operationArg.value.uppercase()
+                    else -> operationArg?.toString()?.uppercase() ?: throw RuntimeException("AGGREGATE() second argument must be a string")
+                }
                 return when (operation) {
                     "SUM" -> list.sum()
                     "AVG" -> list.average()

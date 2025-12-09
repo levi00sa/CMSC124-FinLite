@@ -37,7 +37,7 @@ class Parser(private val tokens: List<Token>) {
     // STATEMENTS
     // ============================
 
-    private fun statement(): Stmt {
+    fun statement(): Stmt {
         skipNewlines()
 
         return try {
@@ -52,8 +52,15 @@ class Parser(private val tokens: List<Token>) {
                     val financeStmt = financeParser.parseFinanceStatement()
                     financeStmt ?: exprStmt()
                 }
+                check(SIMULATE) -> {
+                    val financeStmt = financeParser.parseFinanceStatement()
+                    financeStmt ?: exprStmt()
+                }
                 match(RETURN) -> returnStmt()
-                check(SCENARIO) -> scenarioStatement()
+                check(SCENARIO) -> {
+                    val financeStmt = financeParser.parseFinanceStatement()
+                    financeStmt ?: scenarioStatement()
+                }
                 check(PORTFOLIO) -> {
                     val financeStmt = financeParser.parseFinanceStatement()
                     financeStmt ?: exprStmt()
@@ -308,7 +315,7 @@ class Parser(private val tokens: List<Token>) {
                 expr = finishCall(expr)
             } else if (match(DOT)) {
                 val name = consume(IDENTIFIER, "Expect property name after '.'.")
-                expr = FinanceExpr.ColumnAccess(expr, name)
+                expr = Expr.Get(expr, name)
             } else if (match(LEFT_BRACKET)) {
                 var start: Expr? = null
                 var end: Expr? = null
@@ -364,11 +371,32 @@ class Parser(private val tokens: List<Token>) {
                 return Expr.ScopeResolution(scopeType, name)
             }
         }
+        // Lambda: single-param form `x -> expr`
+        if (check(IDENTIFIER) && peekNext(1)?.type == ARROW) {
+            val param = advance() // consume IDENTIFIER
+            advance() // consume ARROW
+            val body = expression()
+            return Expr.Lambda(listOf(param), body)
+        }
+
+        // Parenthesized parameter list lambda: `(a, b) -> expr`
+        if (check(LEFT_PAREN)) {
+            // lookahead to see if this is a lambda parameter list followed by ARROW
+            if (isLambdaAfterParen()) {
+                advance() // consume LEFT_PAREN
+                val params = parseParameterList()
+                consume(RIGHT_PAREN, "Expect ')' after parameter list.")
+                consume(ARROW, "Expect '->' after parameter list.")
+                val body = expression()
+                return Expr.Lambda(params, body)
+            }
+        }
         if (match(
                 IDENTIFIER,
                 NPV, IRR, PV, FV,
                 WACC, CAPM, VAR,
-                SMA, EMA, AMORTIZE
+                SMA, EMA, AMORTIZE,
+                PRINT, LOG
             )) {
             return Expr.Variable(previous())
         }
@@ -384,6 +412,8 @@ class Parser(private val tokens: List<Token>) {
         }
 
         if (match(LEFT_BRACKET)) return parseListLiteral()
+
+        if (match(LEFT_BRACE)) return parseObjectLiteral()
 
         // Try finance expression parsing
         if (check(TABLE)) {
@@ -444,6 +474,34 @@ class Parser(private val tokens: List<Token>) {
         }
 
         return Expr.Call(callee, parenToken, args)
+    }
+
+    // Lookahead helper to detect `( ... ) ->` lambda without consuming tokens
+    private fun isLambdaAfterParen(): Boolean {
+        if (!check(LEFT_PAREN)) return false
+        var depth = 0
+        var offset = 0
+        while (true) {
+            val t = peekNext(offset) ?: return false
+            if (t.type == LEFT_PAREN) depth++
+            if (t.type == RIGHT_PAREN) {
+                depth--
+                if (depth == 0) {
+                    return peekNext(offset + 1)?.type == ARROW
+                }
+            }
+            offset++
+        }
+    }
+
+    private fun parseParameterList(): List<Token> {
+        val params = mutableListOf<Token>()
+        if (check(RIGHT_PAREN)) return params
+        do {
+            val name = consumeIdentifierLike("Expect parameter name in lambda parameter list.")
+            params.add(name)
+        } while (match(COMMA))
+        return params
     }
 
     // ===========================
@@ -552,7 +610,25 @@ class Parser(private val tokens: List<Token>) {
             } while (match(COMMA))
         }
 
-        consume(RIGHT_BRACKET, "Expected ']' after list literal")
+        consume(RIGHT_BRACKET, "Expect ']' after list elements.")
         return Expr.ListLiteral(elements)
+    }
+
+    private fun parseObjectLiteral(): Expr {
+        val fields = linkedMapOf<String, Expr>()
+
+        if (!check(RIGHT_BRACE)) {
+            do {
+                skipNewlines()
+                val nameToken = consume(IDENTIFIER, "Expect field name in object literal.")
+                consume(COLON, "Expect ':' after field name.")
+                val valueExpr = expression()
+                fields[nameToken.lexeme] = valueExpr
+                skipNewlines()
+            } while (match(COMMA))
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after object literal.")
+        return Expr.ObjectLiteral(fields)
     }
 }
