@@ -203,4 +203,66 @@ PRINT sched.principal[0]  # first principal portion
 PRINT "final balance"
 
 PRINT sched.balance[months - 1]  # final balance (should be 0 or near 0)
+
+###
+PRINT "Portfolio as object with assets and weights"
+LET assets = [0.12, 0.09, 0.15, 0.08]
+LET weights = [0.40, 0.30, 0.20, 0.10]
+LET portfolio = { assets: assets, weights: weights }
+
+PRINT portfolio
+
+PRINT "Value at Risk calculation on returns"
+LET returns = [0.05, 0.03, 0.04, 0.06, 0.02]
+LET varResult = VAR(returns, 0.95)
+PRINT varResult
+
+PRINT "SMA (Simple Moving Average)"
+LET prices = [100, 102, 101, 103, 105, 104, 106, 108]
+LET sma3 = SMA(prices, 3)
+PRINT sma3
+
+PRINT "EMA (Exponential Moving Average)"
+LET ema3 = EMA(prices, 3)
+PRINT ema3
+
+PRINT "Portfolio as native block"
+PORTFOLIO myPortfolio:
+    DEBIT cash 0.12
+    DEBIT stocks 0.09
+    DEBIT bonds 0.15
+    DEBIT real_estate 0.08
+    CREDIT liabilities 0.40
+    CREDIT equity 0.30
+    CREDIT income 0.20
+    CREDIT other 0.10
+END
+PRINT myPortfolio
+
+PRINT "Single asset portfolio"
+PORTFOLIO singleAsset:
+    DEBIT cash 100.0
+END
+PRINT singleAsset
+
+PRINT "Portfolio with only credits"
+PORTFOLIO onlyCredits:
+    CREDIT liabilities 50.0
+    CREDIT equity 50.0
+END
+PRINT onlyCredits
+
+PRINT "Portfolio with only debits"
+PORTFOLIO onlyDebits:
+    DEBIT cash 20.0
+    DEBIT stocks 80.0
+END
+PRINT onlyDebits
+
+PRINT "Portfolio assignment and reuse"
+PORTFOLIO p1:
+    DEBIT cash 10.0
+    CREDIT equity 10.0
+END
+PRINT p1
 ###
