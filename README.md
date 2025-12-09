@@ -1,12 +1,11 @@
 CMSC 124 Lab
 'FinLite' Programming Language
 
-Creator
+Creators
 Eleah Joy Melchor - levi00sa
 Christel Hope Ong - ChristelHope
 
-Language Overview [Provide a brief description of your programming language - what it's a designed for, its main characteristics]
-
+**Language Overview**
     FinLite is a domain-specific programming language designed specifically for finance students and beginner analysts. It aims to simplify learning financial modeling by combining the familiarity of spreadsheets with essential programming concepts. FinLite removes the complexity of traditional languages while allowing its users to automate calculations, build models, and perform scenario and risk analysis using a clear, finance-native syntax.
 
 The language supports the following:
@@ -18,8 +17,7 @@ The language supports the following:
     Portfolio and ledger operations
     Easy printing, logging, and validation
 
-Keywords [List all reserved words that cannot be used as identifiers - include the keyword and a brief description of its purpose]
-
+**Keywords**
     LET                 - used to declare a variable
     SET                 - Used to assign/reassign a value to an existing variable
     TABLE               - used to define a table
@@ -53,71 +51,55 @@ Keywords [List all reserved words that cannot be used as identifiers - include t
     MAP	Row-wise        - transform
     AGGREGATE           - Sum/avg/min/max
 
-Operators [List all operators organized by category (arithmetic, comparison, logical, assignment, etc.)]
+**Operators**
+    Addition +
+    Subtraction -
+    Multiplication *
+    Division /
+    Remainder/Rem %
 
-    Addition
-    +
-    Subtraction
-    -
-    Multiplication
-    *
-    Division
-    /
-    Remainder/Rem
-    %
+    Equal ==
+    Not equal !=
+    Less than <
+    Greater than >
+    Less than or equal to <=
+    Greater than or equal to >=
 
-    equal
-    ==
-    Not equal
-    !=
-    Less than
-    <
-    Greater than
-    >
-    Less than or equal to
-    <=
-    Greater than or equal to
-    >=
+    Not !
+    Logical And &&
+    Logical Or ||
 
-    Not
-    !
-    Logical And
-    &&
-    Logical Or
-    ||
+    Equal =
+    Multiplication assignment *=
+    Addition assignment +=
+    Subtraction assignment -=
+    Division assignment /=
 
-    Equal
-    =
-    Multiplication assignment
-    *=
-    Addition assignment
-    +=
-    Subtraction assignment
-    -=
-    Division assignment
-    /=
+    Increment ++
+    Decrement –
+    Colon :
 
-    Increment
-    ++
-    Decrement
-    –
-    Colon
-    :
-
-
-Literals [Describe the format and syntax for each type of literal value (e.g., numbers, strings, characters, etc.) your language supports]
+**Literals**
     Integers: 42, 4.2, 0, -42, -1500.75, 0.12, 1.2e6, 5e-3
+    
     Money: 1000 PHP, 2000 USD, 5000 JPY
+    
     Strings: use double-quotations with \n and \t
+    
     Multi-line string:
-    """
-    This is a
-    multi-line string
-    """
+        """
+        This is a
+        multi-line string
+        """
+        
     Characters: single characters inside single quotes
+    
     Boolean literals: TRUE, FALSE
+    
     Null: NULL
+    
     Date literals: YYYY-MM-DD
+    
     Time series literals: 
     TIMESERIES(
         start="2024-01-01",
@@ -133,34 +115,30 @@ Literals [Describe the format and syntax for each type of literal value (e.g., n
     Collections: 
         Arrays: [a, b, c], [[1,2],[3,4]]
 
-
-Identifiers [Define the rules for valid identifiers (variable names, function names, etc.) and whether they are case-sensitive]
-    
+**Identifiers**
     Rules for variable names: 
         Start with A-Z, a-z, and underscore
         May contain letters, digits, underscores
         **Case sensitive** for simplifying implementation and reducing ambiguity 
         Naming conventions: lowerCamelCase for variables and functions, UPPERCASE for constants
-        Identifiers cannot contain dots .
+        Identifiers cannot contain dots (.)
 
-Comments [Describe the syntax for comments and whether nested comments are supported]
+**Comments **
     Single-line comments: # comment here
     Multi-line comments: 
             ###
             block comment
             ###
 
-Syntax Style [Describe whether whitespace is significant, how statements are terminated, and what delimiters are used for blocks and grouping]
-Whitespace insignificant
-
+**Syntax Style**
+    Whitespace insignificant
     Statements end with semicolon or newline
     Blocks end with END
     Uses () and [] for grouping
     Indentation optional (non-significant)
     Imports: IMPORT lib FROM "lib"
 
-Sample Code [Provide a few examples of valid code in your language to demonstrate the syntax and features]
-
+**Sample Code**
     Variable Declarations
         LET rate = 0.12 
         LET years = 5 
@@ -237,8 +215,7 @@ Sample Code [Provide a few examples of valid code in your language to demonstrat
         PRINT "Decision: REJECT project."
     END
 
-
-Design Rationale [Explain the reasoning behind your design choices]
+**Design Rationale**
     Finance students often struggle with syntax, complex data structures, learning Python/R, and fear of “traditional coding”. With the current advancement in finance tech, it is essential to aid them in learning and understanding financial modeling, risk analysis, model automations, data analysis, data manipulation, and more. Finance students typically think in cash flows, formulas, tables, transactions, scenarios, and risk, so we designed FinLite to be spreadsheet-native or Excel-like. By combining the familiarity of spreadsheets with the structure and clarity of code, FinLite makes financial modeling more intuitive and accurate. Instead of manually handling long formulas or error-prone cell references, students can describe financial scenarios, transactions, portfolios, and cash flow using readable and financial-friendly syntax.
     The language includes built-in functions for common tasks–NPV, IRR, discounting, amortization, risk metrics–so users can compute advanced financial values without reinventing formulas. 
 
@@ -249,9 +226,7 @@ Design Rationale [Explain the reasoning behind your design choices]
     
     The language aims to support scenarios, sensitivity analysis, and time series operations so students can perform “what-if” analyses that require complicated Excel calculations. More advanced features such as multi-currency, date systems, and full portfolio simulations are planned for future versions.
 
-[GRAMMAR]
-
-    Lab2 CFG:    
+**Context-Free Grammar:**
         program        → declaration* EOF ;
         declaration    → "LET" IDENTIFIER "=" expression
                     | statement ;
@@ -280,4 +255,5 @@ Design Rationale [Explain the reasoning behind your design choices]
         tableLiteral   → "TABLE" "(" field ( "," field )* ")" ;
         field          → IDENTIFIER ":" "[" exprList "]" ;
         exprList       → expression ( "," expression )* ;
+
 
