@@ -49,6 +49,7 @@ class Parser(private val tokens: List<Token>) {
                 match(IF) -> ifStmt()
                 match(WHILE) -> whileStmt()
                 match(FOR) -> forStmt()
+                match(IMPORT) -> importStmt()
                 check(RUN) -> {
                     val financeStmt = financeParser.parseFinanceStatement()
                     financeStmt ?: exprStmt()
@@ -97,6 +98,18 @@ class Parser(private val tokens: List<Token>) {
         val minusTok = Token(TokenType.MINUS, "-", null, name.line)
         val assignExpr = Expr.Binary(Expr.Variable(name), minusTok, one)
         return Stmt.SetStmt(name, assignExpr)
+    }
+
+    private fun importStmt(): Stmt {
+        val filepath = consume(STRING, "Expect string filepath after IMPORT.")
+        val filepathStr = filepath.literal as String
+        consume(AS, "Expect AS after filepath.")
+        val moduleName = consume(IDENTIFIER, "Expect module name after AS.")
+        consume(NEWLINE, "Expect newline after IMPORT statement.")
+        
+        // Create a placeholder for an import statement
+        // The actual loading will be done by the interpreter
+        return Stmt.Let(moduleName, Expr.Literal(filepathStr))  // Temporary; we'll add proper ImportStmt if needed
     }
 
     private fun functionDecl(): Stmt.FunctionDecl {

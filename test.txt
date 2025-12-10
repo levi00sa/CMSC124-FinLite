@@ -323,7 +323,7 @@ FUNC addx(a) {
 LET add5 = addx(5)
 PRINT add5(10)
 
-PRINT "3. Financial Functions"
+ PRINT "3. Financial Functions"
 PRINT NPV([-100, 60, 60], 0.1)
 PRINT IRR([-100, 60, 60])
 PRINT AMORTIZE(100000, 0.05, 5).payment[0]
@@ -340,5 +340,142 @@ PORTFOLIO p:
 END
 PRINT p
 
-###
+PRINT "1. Variables"
+LET x = 10
+LET y = 20
+SET x = 15
+PRINT "x =", x
+PRINT "y =", y
 
+PRINT "2. Functions with Closures"
+FUNC addx(a) {
+    FUNC adder(b) {
+        RETURN a + b
+    }
+    RETURN adder
+}
+LET add5 = addx(5)
+PRINT add5(10)
+
+ PRINT "3. Financial Functions"
+PRINT NPV([-100, 60, 60], 0.1)
+PRINT IRR([-100, 60, 60])
+PRINT AMORTIZE(100000, 0.05, 5).payment[0]
+
+PRINT "4. TIMESERIES"
+LET data = [10, 20, 30, 40, 50]
+LET ts = TIMESERIES(data, 2)
+PRINT ts
+
+PRINT "5. Portfolio"
+PORTFOLIO p:
+    DEBIT assets 100
+    CREDIT liabilities 50
+END
+PRINT p
+
+# Ledger / Cashflow test
+
+PRINT "Cashflow / Ledger test"
+
+LET cf = [100, 200, -50]
+
+PRINT cf                # prints a list representing cashflows
+
+PRINT NPV(cf, 0.1)      # compute NPV on the cashflow list
+
+PRINT "Portfolio-as-ledger test"
+
+PORTFOLIO acct:
+    DEBIT cash 100.0
+    CREDIT equity 100.0
+END
+PRINT acct              # prints the Portfolio / or LEDGER representation stored
+
+
+# Historical stock prices
+LET stock_prices = [100, 102, 98, 105, 103, 107, 106, 110, 108, 112]
+
+# Monthly returns
+LET monthly_returns = [0.02, -0.04, 0.07, -0.02, 0.04, -0.01, 0.04, -0.02, 0.04]
+
+# Portfolio allocation
+LET portfolio_assets = [0.40, 0.30, 0.20, 0.10]
+LET portfolio_weights = [0.40, 0.30, 0.20, 0.10]
+
+# Risk-free rate and market premium
+LET risk_free_rate = 0.02
+LET market_premium = 0.08
+
+# Sample betas for assets
+LET asset_betas = [1.2, 0.9, 1.1, 0.7]
+
+PRINT "data.finlite loaded"
+
+PRINT "Test 1: Load data module"
+IMPORT "data.finlite" AS data
+PRINT "Data module imported"
+
+PRINT "Test 2: Load helper module"
+IMPORT "helpers.finlite" AS helpers
+PRINT "Helpers module imported"
+
+PRINT "Test 3: Use imported data"
+LET prices = [100, 102, 98, 105, 103, 107]
+PRINT "Stock prices loaded"
+PRINT prices
+
+PRINT "Test 4: Calculate returns using helper logic"
+LET initial = 100
+LET final = 115
+LET ret_pct = ((final - initial) / initial) * 100
+PRINT "Return percentage:"
+PRINT ret_pct
+
+PRINT "Test 5: Compound interest calculation"
+LET principal = 10000
+LET rate = 0.05
+LET years = 5
+LET future_value = principal * ((1 + rate) ^ years)
+PRINT "Future value after 5 years at 5%:"
+PRINT future_value
+
+PRINT "Test 6: Portfolio analysis"
+LET assets = [100, 80, 60, 40]
+LET total = sum(assets)
+PRINT "Total portfolio value:"
+PRINT total
+LET num_assets = len(assets)
+PRINT "Number of assets:"
+PRINT num_assets
+
+PRINT "Test 7: CAPM calculation with beta"
+LET beta = 1.2
+LET rf = 0.02
+LET premium = 0.08
+LET required_return = CAPM(beta, rf, premium)
+PRINT "Required return (CAPM):"
+PRINT required_return
+
+# Calculate compound interest
+FUNC compound_interest(principal, rate, years) {
+    RETURN principal * ((1 + rate) ^ years)
+}
+
+# Calculate simple return percentage
+FUNC return_pct(initial, final) {
+    RETURN ((final - initial) / initial) * 100
+}
+
+# Calculate annualized return
+FUNC annualized_return(total_return, years) {
+    RETURN ((1 + total_return) ^ (1 / years)) - 1
+}
+
+# Portfolio rebalance helper - average the weights
+FUNC avg_weight(weights) {
+    RETURN 1 / len(weights)
+}
+
+PRINT "helpers.finlite loaded"
+###

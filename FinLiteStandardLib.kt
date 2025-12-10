@@ -378,6 +378,153 @@ object FinLiteStandardLib {
                 return null
             }
         }))
+
+        // -------------------------
+        // FILE I/O FUNCTIONS
+        // -------------------------
+        env.define("LOAD_CSV", RuntimeValue.Function(object : Callable {
+            override fun arity() = 1
+            override fun call(interpreter: Interpreter?, arguments: List<RuntimeValue?>): RuntimeValue? {
+                val filepath = (arguments[0] as? RuntimeValue.String)?.value
+                    ?: throw RuntimeException("LOAD_CSV() requires a string filepath")
+                
+                val lines = try {
+                    java.io.File(filepath).readLines()
+                } catch (e: Exception) {
+                    throw RuntimeException("LOAD_CSV() failed to read file: ${e.message}")
+                }
+                
+                if (lines.isEmpty()) return RuntimeValue.Table(emptyMap())
+                
+                val headers = lines[0].split(",").map { it.trim() }
+                val data = mutableMapOf<String, MutableList<Double>>()
+                for (header in headers) data[header] = mutableListOf()
+                
+                for (i in 1 until lines.size) {
+                    val values = lines[i].split(",").map { it.trim().toDoubleOrNull() ?: 0.0 }
+                    for (j in 0 until minOf(headers.size, values.size)) {
+                        data[headers[j]]?.add(values[j])
+                    }
+                }
+                
+                return RuntimeValue.Table(data.mapValues { it.value as kotlin.collections.List<Double> })
+            }
+        }))
+
+        env.define("SAVE_CSV", RuntimeValue.Function(object : Callable {
+            override fun arity() = 2
+            override fun call(interpreter: Interpreter?, arguments: List<RuntimeValue?>): RuntimeValue? {
+                val table = arguments[0] as? RuntimeValue.Table
+                    ?: throw RuntimeException("SAVE_CSV() first argument must be a TABLE")
+                val filepath = (arguments[1] as? RuntimeValue.String)?.value
+                    ?: throw RuntimeException("SAVE_CSV() second argument must be a string filepath")
+                
+                if (table.columns.isEmpty()) {
+                    java.io.File(filepath).writeText("")
+                    return null
+                }
+                
+                val headers = table.columns.keys.toList()
+                val nRows = table.columns.values.first().size
+                val csv = StringBuilder()
+                csv.append(headers.joinToString(",")).append("\n")
+                
+                for (i in 0 until nRows) {
+                    val row = headers.map { col -> table.columns[col]!![i].toString() }
+                    csv.append(row.joinToString(",")).append("\n")
+                }
+                
+                try {
+                    java.io.File(filepath).writeText(csv.toString())
+                } catch (e: Exception) {
+                    throw RuntimeException("SAVE_CSV() failed to write file: ${e.message}")
+                }
+                
+                return null
+            }
+        }))
+
+        env.define("LOAD_JSON", RuntimeValue.Function(object : Callable {
+            override fun arity() = 1
+            override fun call(interpreter: Interpreter?, arguments: List<RuntimeValue?>): RuntimeValue? {
+                val filepath = (arguments[0] as? RuntimeValue.String)?.value
+                    ?: throw RuntimeException("LOAD_JSON() requires a string filepath")
+                
+                // Simple JSON parsing for basic objects/arrays
+                val content = try {
+                    java.io.File(filepath).readText()
+                } catch (e: Exception) {
+                    throw RuntimeException("LOAD_JSON() failed to read file: ${e.message}")
+                }
+                
+                // For now, return a simple message (full JSON parsing would require a library)
+                println("[LOAD_JSON] Loaded: $filepath")
+                return RuntimeValue.String(content)
+            }
+        }))
+
+        env.define("SAVE_JSON", RuntimeValue.Function(object : Callable {
+            override fun arity() = 2
+            override fun call(interpreter: Interpreter?, arguments: List<RuntimeValue?>): RuntimeValue? {
+                val data = arguments[0]
+                val filepath = (arguments[1] as? RuntimeValue.String)?.value
+                    ?: throw RuntimeException("SAVE_JSON() second argument must be a string filepath")
+                
+                val json = when (data) {
+                    is RuntimeValue.Object -> {
+                        val entries = data.fields.entries.joinToString(", ") { (k, v) ->
+                            "\"$k\": ${valueToJson(v)}"
+                        }
+                        "{ $entries }"
+                    }
+                    is RuntimeValue.ListValue -> {
+                        "[${data.elements.joinToString(", ") { valueToJson(it) }}]"
+                    }
+                    else -> valueToJson(data)
+                }
+                
+                try {
+                    java.io.File(filepath).writeText(json)
+                } catch (e: Exception) {
+                    throw RuntimeException("SAVE_JSON() failed to write file: ${e.message}")
+                }
+                
+                return null
+            }
+        }))
+
+        env.define("LOAD_FILE", RuntimeValue.Function(object : Callable {
+            override fun arity() = 1
+            override fun call(interpreter: Interpreter?, arguments: List<RuntimeValue?>): RuntimeValue? {
+                val filepath = (arguments[0] as? RuntimeValue.String)?.value
+                    ?: throw RuntimeException("LOAD_FILE() requires a string filepath")
+                
+                val content = try {
+                    java.io.File(filepath).readText()
+                } catch (e: Exception) {
+                    throw RuntimeException("LOAD_FILE() failed to read file: ${e.message}")
+                }
+                
+                return RuntimeValue.String(content)
+            }
+        }))
+
+        env.define("SAVE_FILE", RuntimeValue.Function(object : Callable {
+            override fun arity() = 2
+            override fun call(interpreter: Interpreter?, arguments: List<RuntimeValue?>): RuntimeValue? {
+                val content = arguments[0]?.toString() ?: ""
+                val filepath = (arguments[1] as? RuntimeValue.String)?.value
+                    ?: throw RuntimeException("SAVE_FILE() second argument must be a string filepath")
+                
+                try {
+                    java.io.File(filepath).writeText(content)
+                } catch (e: Exception) {
+                    throw RuntimeException("SAVE_FILE() failed to write file: ${e.message}")
+                }
+                
+                return null
+            }
+        }))
     }
 
     // -------------------------
@@ -419,6 +566,23 @@ object FinLiteStandardLib {
             is RuntimeValue.String -> value.value.isNotEmpty()
             is RuntimeValue.ListValue -> value.elements.isNotEmpty()
             else -> true
+        }
+    }
+
+    private fun valueToJson(value: RuntimeValue?): String {
+        return when (value) {
+            is RuntimeValue.String -> "\"${value.value.replace("\"", "\\\"")}\""
+            is RuntimeValue.Number -> value.value.toString()
+            is RuntimeValue.Bool -> value.value.toString()
+            is RuntimeValue.ListValue -> "[${value.elements.joinToString(", ") { valueToJson(it) }}]"
+            is RuntimeValue.Object -> {
+                val entries = value.fields.entries.joinToString(", ") { (k, v) ->
+                    "\"$k\": ${valueToJson(v)}"
+                }
+                "{ $entries }"
+            }
+            null -> "null"
+            else -> "\"${value.toString()}\""
         }
     }
 }

@@ -29,6 +29,10 @@ val keywords: Map<String, TokenType> = mapOf(
     "log" to TokenType.LOG,
     "return" to TokenType.RETURN,
 
+    "import" to TokenType.IMPORT,
+    "export" to TokenType.EXPORT,
+    "as" to TokenType.AS,
+
     // Literals 
     "true" to TokenType.TRUE,
     "false" to TokenType.FALSE,
@@ -99,6 +103,8 @@ enum class TokenType {
 
     // Keywords
     LET, SET,IF, THEN, WHILE, FOR, ELSE, ELSEIF, END,PRINT, LOG, RETURN,
+
+    IMPORT, EXPORT, AS,
 
     TABLE, CASHFLOW, TIMESERIES,COMPARE,SCENARIO, RUN, ON, SIMULATE, RUNS,PORTFOLIO, ENTRY, DEBIT, CREDIT, LEDGER,
 
